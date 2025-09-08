@@ -20,7 +20,7 @@ Este guia apresenta os principais conceitos de **Computação em Nuvem (Cloud Co
 
 ## Modelos de Serviço
 
-- **IaaS - Infrastructure as a Service** (Infraestrutura como Serviço): Serviços básicos de infraestrutura (máquinas virtuais, redes, armazenamento).
+**IaaS - Infrastructure as a Service** (Infraestrutura como Serviço): Serviços básicos de infraestrutura (máquinas virtuais, redes, armazenamento).
 
   Exemplo: Criar uma máquina virtual na AWS EC2.
 
