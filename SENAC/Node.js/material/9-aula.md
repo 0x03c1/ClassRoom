@@ -94,7 +94,7 @@ Nesta aula, você aprenderá a:
 
 4. **Teste do Back-end:**
    - No navegador ou via ferramenta de testes (como o Postman), acesse:
-     ```
+     ```bash
      http://IP_DA_INSTANCIA:5000/filmes
      ```
    - Confirme que a API está respondendo corretamente.
@@ -139,7 +139,7 @@ Nesta aula, você aprenderá a:
 
 3. **Teste do Front-end:**
    - No navegador, acesse:
-     ```
+     ```bash
      http://IP_DA_INSTANCIA
      ```
    - Verifique se a aplicação React carrega corretamente e se as chamadas à API (back-end) estão funcionando.
