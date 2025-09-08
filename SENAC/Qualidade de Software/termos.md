@@ -34,7 +34,7 @@ Este guia apresenta os principais conceitos da área de **Qualidade de Software 
 
   if __name__ == "__main__":
       unittest.main()
-      ```
+  ```
 
 **Integration Test** (Teste de Integração): Testa a interação entre diferentes módulos do sistema.
 
