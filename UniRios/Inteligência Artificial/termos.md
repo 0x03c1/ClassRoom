@@ -18,7 +18,7 @@ Este guia apresenta os principais conceitos da disciplina de **Inteligência Art
 
 ## Tipos de Aprendizado
 
-- **Supervised Learning** (Aprendizado Supervisionado): O modelo aprende a partir de dados rotulados.
+**Supervised Learning** (Aprendizado Supervisionado): O modelo aprende a partir de dados rotulados.
 
   Exemplo em Python com Scikit-learn:
 
