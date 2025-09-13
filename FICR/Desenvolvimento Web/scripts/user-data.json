@@ -1,5 +1,16 @@
 {
     "nome": "Roni",
     "idade": 25,
-    "cidade": "Recife"
+    "cidade": "Recife",
+    "estado": "Pernambuco",
+    "pais": "Brasil",
+    "interesses": [
+        "tecnologia",
+        "programação",
+        "música"
+    ],
+    "contato": {
+        "email": "roni@example.com",
+        "telefone": "+55 81 99999-9999"
+    }
 }
