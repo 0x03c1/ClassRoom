@@ -1,0 +1,5 @@
+{
+  "type": "https://example.com/probs/out-of-credit",
+  "title": "Acesso negado",
+  "detail": "Você não tem permissão para acessar este recurso."
+}
