@@ -41,3 +41,13 @@ int main() {
     
     return 0;
 }
+
+/*
+    Para compilar e rodar:
+        1. Salve o código em um arquivo chamado map_filter_reduce.c
+        2. Compile usando:
+        gcc map_filter_reduce.c -o map_filter_reduce
+        3. Execute usando:
+        ./map_filter_reduce
+        Você verá a saída com os resultados do map, filter e reduce.
+*/
