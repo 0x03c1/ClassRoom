@@ -5,6 +5,12 @@ Este repositório reúne os materiais utilizados em disciplinas que ministrei em
 ## Estrutura do Repositório
 
 <details>
+  <summary><strong>CESAR</strong></summary>
+
+  - PIF (Programação Imperativa e Funcional)
+</details>
+
+<details>
   <summary><strong>Estácio</strong></summary>
 
   - Pensamento Computacional  
@@ -14,6 +20,7 @@ Este repositório reúne os materiais utilizados em disciplinas que ministrei em
 <details>
   <summary><strong>FICR</strong></summary>
 
+  - Ciência de Dados e Inteligência Competitiva
   - Desenvolvimento Web  
   - Linguagem de Marcação e Formatação
 </details>
