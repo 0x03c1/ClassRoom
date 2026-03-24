@@ -15,7 +15,8 @@ CREATE TABLE Professor (
     nome varchar(80),
     mat int,
     freq int,
-    id_endereco int,
+    salario int,
+	id_endereco int,
     foreign key (id_endereco) references endereco(id)
 );
     
@@ -57,10 +58,10 @@ INSERT INTO Endereco (logra, cidade, numero, cep) VALUES
 ('Rua B', 'Fortaleza', 321, 60000000);
 
 # -- Professores
-INSERT INTO Professor (nome, mat, freq, id_endereco) VALUES
-('Carlos Silva', 1001, 40, 1),
-('Ana Souza', 1002, 38, 2),
-('Carla Sá', 1003, 40, 1);
+INSERT INTO Professor (nome, mat, freq, salario, id_endereco) VALUES
+('Carlos Silva', 1001, 40, 1100, 1),
+('Ana Souza', 1002, 38, 1080, 2),
+('Carla Sá', 1003, 40, 5000, 1);
 
 # -- Alunos
 INSERT INTO Aluno (nome, mat, freq, nota, id_endereco) VALUES
