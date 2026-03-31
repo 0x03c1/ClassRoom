@@ -74,3 +74,35 @@ INSERT INTO Colegio (setor, id_endereco, id_aluno, id_professor) VALUES
 ('Ensino Fundamental', 1, 1, 1),
 ('Ensino Médio', 2, 2, 2),
 ('Graduação', 1, 3, 2);
+
+
+START TRANSACTION;
+-- OPERAÇÃO UPDATE, DELETE OR INSERT
+INSERT INTO Aluno (nome, mat, freq, nota, id_endereco) VALUES
+('Laura Diniz', 2029, 35, 9.5, 1)
+
+COMMIT; -- SE OCORRER TUDO CERTO COMMIT
+ROLLBACK; -- CASO CONTRÁRIO, ROLLBACK
+
+-- FUNÇÕES AGREGADORAS
+
+SELECT COUNT(*)
+FROM endereco;
+
+SELECT MAX(salario)
+FROM professor;
+
+SELECT id, MAX(salario) as salario_mes
+FROM professor;
+
+SELECT MIN(salario)
+FROM professor;
+
+SELECT SUM(salario) as soldo
+FROM professor;
+
+SELECT AVG(salario) as media_salario
+FROM professor;
+
+SELECT ROUND(AVG(salario)) as media_salario
+FROM professor;
