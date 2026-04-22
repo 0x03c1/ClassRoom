@@ -1,44 +1,45 @@
 CREATE DATABASE Educacao;
 
 USE Educacao;
-
 CREATE TABLE Endereco (
-	id int auto_increment primary key,
-    logra varchar(80),
-    cidade varchar(80),
-    numero int,
-    cep int
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    logra VARCHAR(80),
+    cidade VARCHAR(80),
+    numero INT,
+    cep INT
 );
 
 CREATE TABLE Professor (
-	id int auto_increment primary key,
-    nome varchar(80),
-    mat int,
-    freq int,
-    salario int,
-	id_endereco int,
-    foreign key (id_endereco) references endereco(id)
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(80),
+    mat INT,
+    freq INT,
+    salario INT,
+	id_endereco INT,
+    FOREIGN KEY (id_endereco) REFERENCES Endereco(id)
 );
-    
+
 CREATE TABLE Aluno (
-	id int auto_increment primary key,
-    nome varchar(80),
-    mat int,
-    freq int,
-    nota float,
-    id_endereco int,
-    foreign key (id_endereco) references endereco(id)
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(80),
+    mat INT,
+    freq INT,
+    nota FLOAT,
+    id_endereco INT,
+    FOREIGN KEY (id_endereco) REFERENCES Endereco(id)
 );
-    
+
 CREATE TABLE Colegio (
-	id int auto_increment primary key,
-    setor varchar(80),
-    id_endereco int,
-    id_aluno int,
-    id_professor int,
-foreign key (id_endereco) references endereco(id),
-foreign key (id_aluno) references aluno(id),
-foreign key (id_professor) references professor(id));
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    setor VARCHAR(80),
+    id_endereco INT,
+    id_aluno INT,
+    id_professor INT,
+    FOREIGN KEY (id_endereco) REFERENCES Endereco(id),
+    FOREIGN KEY (id_aluno) REFERENCES Aluno(id),
+    FOREIGN KEY (id_professor) REFERENCES Professor(id)
+);
+
 
 # ---------- Divisor de Águas ----------
 
@@ -75,7 +76,6 @@ INSERT INTO Colegio (setor, id_endereco, id_aluno, id_professor) VALUES
 ('Ensino Médio', 2, 2, 2),
 ('Graduação', 1, 3, 2);
 
-
 START TRANSACTION;
 -- OPERAÇÃO UPDATE, DELETE OR INSERT
 INSERT INTO Aluno (nome, mat, freq, nota, id_endereco) VALUES
@@ -87,22 +87,22 @@ ROLLBACK; -- CASO CONTRÁRIO, ROLLBACK
 -- FUNÇÕES AGREGADORAS
 
 SELECT COUNT(*)
-FROM endereco;
+FROM Endereco;
 
 SELECT MAX(salario)
-FROM professor;
+FROM Professor;
 
 SELECT id, MAX(salario) as salario_mes
-FROM professor;
+FROM Professor;
 
 SELECT MIN(salario)
-FROM professor;
+FROM Professor;
 
 SELECT SUM(salario) as soldo
-FROM professor;
+FROM Professor;
 
 SELECT AVG(salario) as media_salario
-FROM professor;
+FROM Professor;
 
 SELECT ROUND(AVG(salario)) as media_salario
-FROM professor;
+FROM Professor;
