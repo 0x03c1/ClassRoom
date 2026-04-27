@@ -211,5 +211,5 @@ python manage.py dumpdata livros > dados.json
 
 ---
 
-**Aula anterior:** [Aula 10 — Deploy](./aula10-deploy.md)
-**Voltar ao início:** [README](../README.md)
+- **Aula anterior:** [Aula 10 — Deploy](./aula10-deploy.md)
+- **Voltar ao início:** [README](../README.md)

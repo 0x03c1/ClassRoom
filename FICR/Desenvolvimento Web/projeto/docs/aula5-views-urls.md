@@ -361,5 +361,5 @@ git push
 
 ---
 
-**Aula anterior:** [Aula 4 — Django Admin](./aula4-admin.md)
-**Próxima aula:** [Aula 6 — Templates e Bootstrap](./aula6-templates.md)
+- **Próxima aula:** [Aula 6 — Templates e Bootstrap](./aula6-templates.md)
+- **Aula anterior:** [Aula 4 — Django Admin](./aula4-admin.md)

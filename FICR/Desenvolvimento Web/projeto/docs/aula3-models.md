@@ -388,5 +388,5 @@ git push
 
 ---
 
-**Aula anterior:** [Aula 2 — Início do Projeto](./aula2-inicio-do-projeto.md)
-**Próxima aula:** [Aula 4 — Django Admin](./aula4-admin.md)
+- **Próxima aula:** [Aula 4 — Django Admin](./aula4-admin.md)
+- **Aula anterior:** [Aula 2 — Início do Projeto](./aula2-inicio-do-projeto.md)

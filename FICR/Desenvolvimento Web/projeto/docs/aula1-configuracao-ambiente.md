@@ -260,4 +260,4 @@ git commit -m "chore: configura ambiente inicial do projeto"
 
 ---
 
- **Próxima aula:** [Aula 2 — Início do Projeto](./aula2-inicio-do-projeto.md)
+- **Próxima aula:** [Aula 2 — Início do Projeto](./aula2-inicio-do-projeto.md)
