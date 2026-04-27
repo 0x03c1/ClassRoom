@@ -245,5 +245,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 3 — Models](./aula3-models.md)
- **Próxima aula:** [Aula 5 — Views e URLs](./aula5-views-urls.md)
+**Aula anterior:** [Aula 3 — Models](./aula3-models.md)
+**Próxima aula:** [Aula 5 — Views e URLs](./aula5-views-urls.md)

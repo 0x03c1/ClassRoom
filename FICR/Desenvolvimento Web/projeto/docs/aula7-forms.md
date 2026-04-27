@@ -414,5 +414,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 6 — Templates e Bootstrap](./aula6-templates.md)
- **Próxima aula:** [Aula 8 — CRUD Completo](./aula8-crud.md)
+**Aula anterior:** [Aula 6 — Templates e Bootstrap](./aula6-templates.md)
+**Próxima aula:** [Aula 8 — CRUD Completo](./aula8-crud.md)

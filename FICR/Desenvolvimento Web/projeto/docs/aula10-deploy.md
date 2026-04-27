@@ -341,5 +341,5 @@ git push
 
  **Parabéns! Você concluiu o projeto.**
 
-⬅ **Aula anterior:** [Aula 9 — Autenticação](./aula9-autenticacao.md)
- **Material complementar:** [Aula 99 — Referências](./aula99-referencias.md)
+**Aula anterior:** [Aula 9 — Autenticação](./aula9-autenticacao.md)
+**Material complementar:** [Aula 99 — Referências](./aula99-referencias.md)

@@ -304,5 +304,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 1 — Configuração do Ambiente](./aula1-configuracao-ambiente.md)
- **Próxima aula:** [Aula 3 — Models](./aula3-models.md)
+**Aula anterior:** [Aula 1 — Configuração do Ambiente](./aula1-configuracao-ambiente.md)
+**Próxima aula:** [Aula 3 — Models](./aula3-models.md)

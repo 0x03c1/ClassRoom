@@ -496,5 +496,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 5 — Views e URLs](./aula5-views-urls.md)
- **Próxima aula:** [Aula 7 — Forms e Validação](./aula7-forms.md)
+**Aula anterior:** [Aula 5 — Views e URLs](./aula5-views-urls.md)
+**Próxima aula:** [Aula 7 — Forms e Validação](./aula7-forms.md)

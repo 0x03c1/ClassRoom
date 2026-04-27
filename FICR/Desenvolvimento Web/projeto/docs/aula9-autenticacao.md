@@ -468,5 +468,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 8 — CRUD Completo](./aula8-crud.md)
- **Próxima aula:** [Aula 10 — Deploy](./aula10-deploy.md)
+**Aula anterior:** [Aula 8 — CRUD Completo](./aula8-crud.md)
+**Próxima aula:** [Aula 10 — Deploy](./aula10-deploy.md)

@@ -404,5 +404,5 @@ git push
 
 ---
 
-⬅ **Aula anterior:** [Aula 7 — Forms e Validação](./aula7-forms.md)
- **Próxima aula:** [Aula 9 — Autenticação e Controle de Acesso](./aula9-autenticacao.md)
+**Aula anterior:** [Aula 7 — Forms e Validação](./aula7-forms.md)
+**Próxima aula:** [Aula 9 — Autenticação e Controle de Acesso](./aula9-autenticacao.md)
