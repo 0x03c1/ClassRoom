@@ -1,12 +1,29 @@
 # Aula 5 — Síntese: Benchmark Integrado e Resolução do Mistério
 
+Duração: 20 min + 10 min de encerramento. Foco em workload, profiling e análise integrada.
+
+## Navegação
+
+- [Voltar ao índice do laboratório](../../README.md)
+- [Aula anterior: Barramentos, I/O e Interrupções](../aula4-barramentos-io-interrupcoes/README.md)
+- [Modelo de relatório](../../relatorio-template/relatorio.md)
+
+## Ponte com a teoria
+
+Este bloco integra todos os conceitos da disciplina em um único workload
+realista. Ao final do profiling, você terá evidências para explicar se o
+gargalo dominante está em CPU, cache, memória, armazenamento ou barramento.
+
 ## Descrição
 
-Aqui amarramos tudo. Cada dupla executa um **workload realista** de sua escolha, perfilando-o com ferramentas que **medem simultaneamente** os subsistemas estudados (CPU, cache, memória, I/O). Em seguida, retomamos a lista de hipóteses do início da aula e classificamos cada uma. O bloco encerra a narrativa: **a pergunta inicial é respondida pela própria turma, com dados que eles geraram.**
+Aqui você fecha o ciclo da disciplina. A dupla executa um **workload
+realista**, coleta métricas dos subsistemas estudados (CPU, cache, memória e
+I/O) e revisita as hipóteses iniciais com base em dados medidos.
 
 ## Objetivos de Aprendizagem
 
 Ao final deste bloco, o aluno deve ser capaz de:
+
 - Usar `perf stat` (Linux) ou Windows Performance Recorder para perfilar um workload real
 - Identificar qual subsistema é o **gargalo dominante** da sua máquina
 - Defender, com dados, decisões de upgrade ou otimização
@@ -20,15 +37,15 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 Cada dupla escolhe **um** workload entre as opções:
 
-| Opção | Workload | O que estressa |
-|-------|----------|-----------------|
-| A | Compilar um projeto C médio (clone do `linux/tools/perf` ou similar) | CPU + I/O + memória |
-| B | `7z b` (benchmark interno do 7-Zip) | CPU + cache |
-| C | Multiplicação de matrizes em Python/NumPy 5000x5000 | CPU + memória + cache |
-| D | `ffmpeg` convertendo um vídeo de 1 min para outro codec | CPU intensivo + I/O |
-| E | Workload do script `scripts/workload_completo.py` (recomendado se houver dúvida) | Tudo, controlado |
+| Opção | Workload                                                                         | O que estressa        |
+| ----- | -------------------------------------------------------------------------------- | --------------------- |
+| A     | Compilar um projeto C médio (clone do `linux/tools/perf` ou similar)             | CPU + I/O + memória   |
+| B     | `7z b` (benchmark interno do 7-Zip)                                              | CPU + cache           |
+| C     | Multiplicação de matrizes em Python/NumPy 5000x5000                              | CPU + memória + cache |
+| D     | `ffmpeg` convertendo um vídeo de 1 min para outro codec                          | CPU intensivo + I/O   |
+| E     | Workload do script `scripts/workload_completo.py` (recomendado se houver dúvida) | Tudo, controlado      |
 
-> **Recomendação:** se a turma tiver dúvida na escolha, oriente todos a usarem o **script `workload_completo.py`** deste repositório, pois ele exercita CPU, cache e memória de forma controlada e produz números diretamente comparáveis entre máquinas.
+> Recomendação: se houver dúvida na escolha, use o **script `workload_completo.py`**, pois ele exercita CPU, cache e memória de forma controlada e gera resultados comparáveis entre máquinas.
 
 ### Atividade 5.2 — Perfilar o workload (10 min)
 
@@ -43,13 +60,13 @@ branch-misses,page-faults,context-switches \
 
 **O que olhar na saída:**
 
-| Métrica | O que significa | Sinal de alarme |
-|---------|------------------|------------------|
-| `instructions per cycle (IPC)` | Quantas instruções por ciclo de clock | < 1.0 → CPU está esperando muito |
-| `cache-misses / cache-references` | Taxa de miss | > 5% → algoritmo cache-hostil |
-| `branch-misses` | Predições erradas | Alto → muitos `if` imprevisíveis |
-| `page-faults` | Faltas de página | Alto → pressão de memória |
-| `context-switches` | Trocas de contexto | Alto → muita disputa por CPU |
+| Métrica                           | O que significa                       | Sinal de alarme                  |
+| --------------------------------- | ------------------------------------- | -------------------------------- |
+| `instructions per cycle (IPC)`    | Quantas instruções por ciclo de clock | < 1.0 → CPU está esperando muito |
+| `cache-misses / cache-references` | Taxa de miss                          | > 5% → algoritmo cache-hostil    |
+| `branch-misses`                   | Predições erradas                     | Alto → muitos `if` imprevisíveis |
+| `page-faults`                     | Faltas de página                      | Alto → pressão de memória        |
+| `context-switches`                | Trocas de contexto                    | Alto → muita disputa por CPU     |
 
 #### No Windows — Process Explorer + Performance Monitor
 
@@ -72,32 +89,33 @@ python3 scripts/workload_completo.py
 ```
 
 Este script:
+
 - Executa fases controladas: **CPU-bound**, **memory-bound**, **I/O-bound**
 - Coleta métricas de CPU, memória e disco em paralelo (via psutil)
 - Gera um relatório final com inferência de gargalo
 
 ### Atividade 5.3 — Tabela de evidências (3 min)
 
-Preencham no relatório:
+Preencha no relatório:
 
-| Subsistema | Métrica medida | Valor da minha máquina |
-|------------|----------------|--------------------------|
-| Pipeline (CPU) | IPC (instructions per cycle) | |
-| Cache | Taxa de cache miss (%) | |
-| Memória virtual | Page faults / s | |
-| Armazenamento | Throughput durante o workload | |
-| Multicore | Threads efetivamente em uso | |
-| PCIe | Saturação do link PCIe do SSD | |
+| Subsistema      | Métrica medida                | Valor da minha máquina |
+| --------------- | ----------------------------- | ---------------------- |
+| Pipeline (CPU)  | IPC (instructions per cycle)  |                        |
+| Cache           | Taxa de cache miss (%)        |                        |
+| Memória virtual | Page faults / s               |                        |
+| Armazenamento   | Throughput durante o workload |                        |
+| Multicore       | Threads efetivamente em uso   |                        |
+| PCIe            | Saturação do link PCIe do SSD |                        |
 
 ### Atividade 5.4 — Resolução do mistério (5 min)
 
-Retomem **a lista de hipóteses do quadro** (do Bloco 0). Em grupo, classifiquem cada hipótese:
+Retome **a lista de hipóteses iniciais** (do Bloco 0). Classifique cada hipótese:
 
-- **Confirmada** — temos evidência medida que sustenta
+- **Confirmada** — há evidência medida que sustenta
 - **Refutada** — os dados contradizem
-- **Parcial** — depende de cenário; expliquem qual
+- **Parcial** — depende do cenário; explique qual
 
-> Esta é a hora em que a turma vê que eles **resolveram a pergunta inicial sozinhos** — esse fechamento é o pico pedagógico da aula.
+> Este passo fecha a investigação: a resposta final deve ser defendida por métricas, não por impressão.
 
 ---
 
@@ -122,11 +140,11 @@ Estas são as perguntas-síntese, valem como nota:
 
 ## Encerramento (10 min — fora do bloco de 20 min)
 
-### Síntese visual no quadro
+### Síntese visual
 
-Desenhem juntos o **caminho de uma instrução**, da memória virtual até a unidade de execução, marcando onde cada tópico da aula entra:
+Represente o **caminho de uma instrução**, da memória virtual até a unidade de execução, marcando onde cada tópico da aula entra:
 
-```
+```text
 Programa em C
      ↓
 [Memória Virtual] ── page fault? ──→ [SSD via PCIe]
@@ -148,16 +166,12 @@ RESULTADO
 2. Comparar as métricas. Onde estão as maiores diferenças? Por quê?
 3. Entregar o relatório completo em **1 semana**.
 
-### Anúncio do próximo encontro
+### Próximo encontro
 
-Conecte com o próximo tópico do plano de aula (sugiro pipeline detalhado com hazards, **cache coherence em multicore**, ou arquiteturas SIMD/GPU).
+Conecte seus resultados com o próximo tópico do plano de aula (pipeline detalhado com hazards, **cache coherence em multicore** ou arquiteturas SIMD/GPU).
 
 ---
 
 ## Scripts deste bloco
 
 - [`scripts/workload_completo.py`](./scripts/workload_completo.py) — workload integrado para profiling
-
----
-
-[← Aula 4](../aula4-barramentos-io-interrupcoes/README.md) | [Índice](../../README.md) | **Aula 5**

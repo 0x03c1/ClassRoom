@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Workload Completo - Aula 5 (Infraestrutura de Hardware)
-Prof. Ronierison Maciel
+Prof. Roni Maciel
 
 Workload controlado com 3 fases distintas:
   1. CPU-bound (cálculo intensivo, dados pequenos — fica em cache)
@@ -137,21 +137,21 @@ def inferir_gargalo(r_cpu, r_mem, r_io):
 
     # Heurísticas indicativas — ajuste conforme cenário típico
     if pontos_io < 100:
-        print("  ⚠ Disco lento (HDD?). Aplicações com muito I/O sofrerão.")
+        print("   Disco lento (HDD?). Aplicações com muito I/O sofrerão.")
     elif pontos_io < 500:
-        print("  ⚠ SSD SATA detectado. NVMe daria ganho considerável.")
+        print("   SSD SATA detectado. NVMe daria ganho considerável.")
     else:
-        print("  ✓ Armazenamento rápido (provavelmente NVMe).")
+        print("   Armazenamento rápido (provavelmente NVMe).")
 
     if pontos_mem < 5:
-        print("  ⚠ Largura de banda de RAM limitada. RAM dual-channel ajudaria.")
+        print("   Largura de banda de RAM limitada. RAM dual-channel ajudaria.")
     else:
-        print("  ✓ RAM com largura de banda saudável.")
+        print("   RAM com largura de banda saudável.")
 
     if r_cpu["cpu_pct"] < (90 / nucleos):
-        print("  ⚠ Workload CPU não saturou os núcleos. Há paralelismo a explorar.")
+        print("   Workload CPU não saturou os núcleos. Há paralelismo a explorar.")
     else:
-        print("  ✓ CPU bem utilizada na fase compute-bound.")
+        print("   CPU bem utilizada na fase compute-bound.")
 
     print("=" * 70)
 
