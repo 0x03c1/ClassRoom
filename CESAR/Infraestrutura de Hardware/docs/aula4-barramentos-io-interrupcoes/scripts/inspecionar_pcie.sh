@@ -1,7 +1,7 @@
 #!/bin/bash
 # inspecionar_pcie.sh — coleta info de PCIe formatada para o relatório
 # Aula 4 - Infraestrutura de Hardware
-# Prof. Ronierison Maciel
+# Prof. Roni Maciel
 
 set -e
 
