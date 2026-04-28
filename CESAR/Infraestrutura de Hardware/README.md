@@ -35,6 +35,7 @@ ementa:
 
 ```text
 docs/
+├── analise-performance-algoritmos/             # Apoio — análise complementar
 ├── aula1-anatomia-cpu-pipeline-multicore/      # Bloco 1 — 00 min
 ├── aula2-hierarquia-memoria-caches/            # Bloco 2 — 00 min
 ├── aula3-ram-armazenamento-memoria-virtual/    # Bloco 3 — 00 min
@@ -55,6 +56,7 @@ relatorio-template/
 | 3     | [RAM, Armazenamento e Memória Virtual](./docs/aula3-ram-armazenamento-memoria-virtual/README.md) | 20 min  |
 | 4     | [Barramentos, I/O e Interrupções](./docs/aula4-barramentos-io-interrupcoes/README.md)            | 15 min  |
 | 5     | [Síntese e Benchmark Integrado](./docs/aula5-sintese-benchmark-integrado/README.md)              | 20 min  |
+| Apoio | [Análise de Performance de Algoritmos](./docs/analise-performance-algoritmos/README.md)          | Extra   |
 | -     | [Modelo de Relatório](./relatorio-template/relatorio.md)                                         | -       |
 
 > **Materiais de consulta:**
