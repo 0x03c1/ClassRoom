@@ -1,29 +1,29 @@
 # Guia de Setup — Antes do Laboratório
 
-> Este guia deve ser seguido **antes** do dia do laboratório.
+> Este guia deve ser seguido **antes** do dia do laboratório. Estimativa: 30-45 min.
 
 ## 1. Windows
 
 ### Ferramentas (download e instalação)
 
-| Software | Link | Tamanho |
-|----------|------|---------|
-| CPU-Z | https://www.cpuid.com/softwares/cpu-z.html | ~3 MB |
-| HWiNFO64 | https://www.hwinfo.com/download/ | ~5 MB |
-| CrystalDiskMark | https://crystalmark.info/en/software/crystaldiskmark/ | ~5 MB |
-| AIDA64 Trial | https://www.aida64.com/downloads | ~50 MB |
-| Cinebench R23 | Microsoft Store ou site da Maxon | ~600 MB |
-| LatencyMon | https://www.resplendence.com/latencymon | ~1 MB |
-| Sysinternals Suite (Process Explorer + RAMMap) | https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite | ~50 MB |
-| Python 3.10+ | https://www.python.org/downloads/ | ~30 MB |
+| Software                                       | Link                                                                          | Tamanho |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- | ------- |
+| CPU-Z                                          | <https://www.cpuid.com/softwares/cpu-z.html>                                  | ~3 MB   |
+| HWiNFO64                                       | <https://www.hwinfo.com/download/>                                            | ~5 MB   |
+| CrystalDiskMark                                | <https://crystalmark.info/en/software/crystaldiskmark/>                       | ~5 MB   |
+| AIDA64 Trial                                   | <https://www.aida64.com/downloads>                                            | ~50 MB  |
+| Cinebench R23                                  | Microsoft Store ou site da Maxon                                              | ~600 MB |
+| LatencyMon                                     | <https://www.resplendence.com/latencymon>                                     | ~1 MB   |
+| Sysinternals Suite (Process Explorer + RAMMap) | <https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite> | ~50 MB  |
+| Python 3.10+                                   | <https://www.python.org/downloads/>                                           | ~30 MB  |
 
-### Após instalar Python:
+### Após instalar Python
 
 ```powershell
 pip install numpy psutil
 ```
 
-### Verificação rápida
+### Verificação rápida no Linux
 
 ```powershell
 python --version
@@ -91,10 +91,10 @@ Se ele rodar e exibir uma tabela com tempos e speedup, você está pronto para o
 
 ## Problemas comuns
 
-| Problema | Solução |
-|----------|---------|
-| `sudo: perf: command not found` | `sudo apt install linux-tools-$(uname -r)` |
-| Python `ModuleNotFoundError: psutil` | `pip3 install --user psutil` ou use `python -m pip install psutil` |
-| Cinebench muito lento | Em "File → Advanced → Custom Test Duration: Off", rodar versão mínima |
-| `fio` permission denied | Rode com sudo ou ajuste o caminho de `--filename` |
-| Script Python trava no Windows | Garanta que está usando Python 3.10+ e que o `multiprocessing` está com `set_start_method("spawn")` |
+| Problema                             | Solução                                                                                             |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `sudo: perf: command not found`      | `sudo apt install linux-tools-$(uname -r)`                                                          |
+| Python `ModuleNotFoundError: psutil` | `pip3 install --user psutil` ou use `python -m pip install psutil`                                  |
+| Cinebench muito lento                | Em "File → Advanced → Custom Test Duration: Off", rodar versão mínima                               |
+| `fio` permission denied              | Rode com sudo ou ajuste o caminho de `--filename`                                                   |
+| Script Python trava no Windows       | Garanta que está usando Python 3.10+ e que o `multiprocessing` está com `set_start_method("spawn")` |
