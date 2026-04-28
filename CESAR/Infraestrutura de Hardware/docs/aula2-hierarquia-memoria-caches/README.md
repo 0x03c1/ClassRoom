@@ -1,12 +1,27 @@
 # Aula 2 — A Pirâmide da Memória: Hierarquia de Caches
 
+Duração: 20 min. Foco em cache L1, L2, L3, latência e localidade.
+
+## Navegação
+
+- [Voltar ao índice do laboratório](../../README.md)
+- [Aula anterior: Anatomia da CPU, Pipeline e Multicore](../aula1-anatomia-cpu-pipeline-multicore/README.md)
+- [Próxima aula: RAM, Armazenamento e Memória Virtual](../aula3-ram-armazenamento-memoria-virtual/README.md)
+
+## Ponte com a teoria
+
+Neste bloco, você relaciona medições reais com conceitos de SRAM, DRAM e
+localidade. O objetivo é observar que a diferença entre L1, L2, L3 e RAM
+não é apenas teórica: ela aparece claramente nos tempos de acesso.
+
 ## Descrição
 
-Este bloco materializa, **com números medidos pelos próprios alunos**, a famosa "pirâmide de memória". Eles descobrem na prática que a latência de acesso cresce em **ordens de grandeza** entre os níveis — e essa descoberta é o gancho para entender por que cache miss é tão caro e por que algoritmos cache-friendly importam.
+Este bloco transforma a "pirâmide de memória" em números medidos na sua máquina. Ao final, você entende por que cache miss custa caro e por que padrões de acesso cache-friendly mudam o desempenho.
 
 ## Objetivos de Aprendizagem
 
 Ao final deste bloco, o aluno deve ser capaz de:
+
 - Construir a tabela de latências dos níveis L1, L2, L3 e RAM da máquina
 - Distinguir cache miss e cache hit em termos de penalidade de tempo
 - Reconhecer localidade temporal e espacial em código
@@ -61,28 +76,29 @@ python3 scripts/teste_localidade.py
 ```
 
 Este script implementa **dois loops que acessam a mesma quantidade de dados**, mas em padrões de acesso diferentes:
+
 - **Loop A:** percorre uma matriz linha por linha (acesso sequencial, amigo do cache)
 - **Loop B:** percorre a mesma matriz coluna por coluna (acesso "saltando", hostil ao cache)
 
-Os alunos vão observar que o Loop B é **muito mais lento**, mesmo executando rigorosamente a mesma quantidade de operações.
+Você vai observar que o Loop B é **muito mais lento**, mesmo executando rigorosamente a mesma quantidade de operações.
 
-> **Pedagogicamente forte:** este é um dos experimentos que mais "abrem a cabeça" do aluno — a diferença de tempo é tão gritante que dispensa explicação teórica adicional.
+> Interpretação esperada: a diferença de tempo aparece mesmo com o mesmo número de operações, porque o padrão de acesso à memória impacta diretamente o cache.
 
 ### Tabela de Resultados (preencher no relatório)
 
 | Nível | Tamanho típico | Latência medida (ns) | Largura de banda (GB/s) |
-|-------|----------------|----------------------|--------------------------|
-| L1 | ~32-64 KB | | |
-| L2 | ~256 KB – 1 MB | | |
-| L3 | ~4-32 MB | | |
-| RAM | GBs | | |
+| ----- | -------------- | -------------------- | ----------------------- |
+| L1    | ~32-64 KB      |                      |                         |
+| L2    | ~256 KB – 1 MB |                      |                         |
+| L3    | ~4-32 MB       |                      |                         |
+| RAM   | GBs            |                      |                         |
 
 #### Tabela do experimento de localidade
 
-| Padrão de acesso | Tempo (s) | Operações por segundo | Razão (B/A) |
-|------------------|-----------|------------------------|-------------|
-| Linha por linha (sequencial) | | | 1.00 |
-| Coluna por coluna (saltando) | | | |
+| Padrão de acesso             | Tempo (s) | Operações por segundo | Razão (B/A) |
+| ---------------------------- | --------- | --------------------- | ----------- |
+| Linha por linha (sequencial) |           |                       | 1.00        |
+| Coluna por coluna (saltando) |           |                       |             |
 
 ---
 
@@ -92,18 +108,14 @@ Os alunos vão observar que o Loop B é **muito mais lento**, mesmo executando r
 2. Um vetor de **100 MB** cabe em qual nível da hierarquia da sua máquina? E um vetor de **200 KB**? Qual deles você espera que rode mais rápido em um loop sequencial — e por quê?
 3. Defina **localidade temporal** e **localidade espacial** com suas palavras. Dê um exemplo de código C que explore bem cada uma.
 4. No experimento de localidade, **a quantidade de operações foi a mesma** nos dois loops. Por que o tempo foi diferente? O que isso revela sobre o que de fato custa ao processador?
-5. Lembrando do Bloco 1: quando dois núcleos rodam simultaneamente, eles **disputam o L3 compartilhado**. Como isso afeta o fator de escala paralelo que vocês mediram?
+5. Lembrando do Bloco 1: quando dois núcleos rodam simultaneamente, eles **disputam o L3 compartilhado**. Como isso afeta o fator de escala paralelo que você mediu?
 
 ---
 
 ## Conexão com o próximo bloco
 
-> *"Vimos que o L3 já é caro. Agora pensem: quando os dados saem da RAM e vão para o **SSD**, a penalidade aumenta em mais 4-5 ordens de grandeza. É exatamente isso que acontece no swap — e é por isso que falta de RAM destrói o desempenho. No próximo bloco, vamos medir essa penalidade na prática."*
+> No próximo bloco, você vai comparar RAM e armazenamento e medir o impacto da paginação quando o sistema começa a usar swap.
 
 ## Scripts deste bloco
 
 - [`scripts/teste_localidade.py`](./scripts/teste_localidade.py) — demonstra impacto de localidade espacial
-
----
-
-[← Aula 1](../aula1-anatomia-cpu-pipeline-multicore/README.md) | [Índice](../../README.md) | **Aula 2** | [Aula 3 →](../aula3-ram-armazenamento-memoria-virtual/README.md)

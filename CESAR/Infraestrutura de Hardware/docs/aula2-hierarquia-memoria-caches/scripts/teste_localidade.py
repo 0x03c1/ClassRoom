@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Teste de Localidade de Cache - Aula 2 (Infraestrutura de Hardware)
-Prof. Ronierison Maciel
+Prof. Roni Maciel
 
 Demonstra empiricamente o impacto da localidade espacial:
 - Loop A: percorre matriz linha por linha (cache-friendly)
@@ -53,7 +53,7 @@ def main():
     print(f"Total de operações por loop: {N*N:,}")
     print("=" * 70)
     print()
-    print("⚠ Para o efeito ser visível, este script usa loops Python puros.")
+    print(" Para o efeito ser visível, este script usa loops Python puros.")
     print("  Com NumPy vetorizado, o compilador resolveria isso pra nós.")
     print("  Reduza N se a sua máquina demorar muito (sugestão: 2000).")
     print()
