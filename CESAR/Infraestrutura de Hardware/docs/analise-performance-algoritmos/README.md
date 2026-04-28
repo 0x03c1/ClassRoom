@@ -37,6 +37,20 @@ analise-performance-algoritmos/
     └── ordenacao.java
 ```
 
+## Acesso rápido
+
+### Scripts para efetuar as medições
+
+- [big_o_visualizador.py](./scripts/big_o_visualizador.py) — medir curva de complexidade empírica
+- [flame_graph_helper.sh](./scripts/flame_graph_helper.sh) — apoiar profiling com `perf` e flame graph
+- [comparador_stacks.py](./scripts/comparador_stacks.py) — comparar linguagens e máquinas
+
+### Exemplos para testar
+
+- [ordenacao.py](./exemplos/ordenacao.py) — exemplo em Python
+- [ordenacao.c](./exemplos/ordenacao.c) — exemplo em C
+- [ordenacao.java](./exemplos/ordenacao.java) — exemplo em Java
+
 ## Casos de uso
 
 | Caso                           | Ferramenta                        | Pergunta que responde                                       | Saída                                  |
@@ -56,7 +70,7 @@ Este caso responde à pergunta clássica de Algoritmos e Estrutura de Dados:
 _"prove que seu algoritmo é O(n log n)"_. Aqui a resposta vem pelo lado
 empírico, medindo tempos com tamanhos crescentes de entrada.
 
-### Ferramenta do Caso 3
+### Ferramenta do Caso 1
 
 A biblioteca `big_O` recebe uma função e uma série de tamanhos de entrada,
 executa o algoritmo, mede os tempos e infere a classe de complexidade que
@@ -74,6 +88,14 @@ pip install big_O numpy matplotlib --break-system-packages
 python3 scripts/big_o_visualizador.py
 ```
 
+Script de medição: [big_o_visualizador.py](./scripts/big_o_visualizador.py)
+
+Exemplos de apoio:
+
+- [ordenacao.py](./exemplos/ordenacao.py)
+- [ordenacao.c](./exemplos/ordenacao.c)
+- [ordenacao.java](./exemplos/ordenacao.java)
+
 O script já vem com algoritmos prontos para comparação:
 
 - **Soma linear** — esperado: O(n)
@@ -81,7 +103,7 @@ O script já vem com algoritmos prontos para comparação:
 - **Bubble sort** — esperado: O(n²)
 - **Sort embutido (Timsort)** — esperado: O(n log n)
 
-### Saída esperada do Caso 3
+### Saída esperada do Caso 1
 
 O script gera:
 
@@ -154,6 +176,8 @@ sudo perf script | stackcollapse-perf.pl | flamegraph.pl > flame.svg
 xdg-open flame.svg
 ```
 
+Script de apoio para medições: [flame_graph_helper.sh](./scripts/flame_graph_helper.sh)
+
 ### Para Python
 
 ```bash
@@ -224,6 +248,14 @@ python3 scripts/comparador_stacks.py \
     "./exemplos/ordenacao_c" \
     "java -cp exemplos/ Ordenacao"
 ```
+
+  Script de medição: [comparador_stacks.py](./scripts/comparador_stacks.py)
+
+  Exemplos usados nessa comparação:
+
+- [ordenacao.py](./exemplos/ordenacao.py)
+- [ordenacao.c](./exemplos/ordenacao.c)
+- [ordenacao.java](./exemplos/ordenacao.java)
 
 ### Saída esperada
 
