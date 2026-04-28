@@ -1,7 +1,7 @@
 #!/bin/bash
 # info_cpu.sh — coleta info da CPU formatada para colar no relatório
 # Aula 1 - Infraestrutura de Hardware
-# Prof. Ronierison Maciel
+# Prof. Roni Maciel
 
 set -e
 
@@ -35,7 +35,7 @@ echo ""
 FLAGS=$(grep -m1 "flags" /proc/cpuinfo)
 for flag in sse sse2 sse4_1 sse4_2 avx avx2 avx512f fma; do
   if echo "$FLAGS" | grep -qw "$flag"; then
-    echo "    [✓] $flag"
+    echo "    [] $flag"
   else
     echo "    [ ] $flag"
   fi

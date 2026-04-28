@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Teste de Paralelismo - Aula 1 (Infraestrutura de Hardware)
-Prof. Ronierison Maciel
+Prof. Roni Maciel
 
 Executa a mesma carga computacional (multiplicação de matrizes) em diferentes
 quantidades de threads e gera uma tabela com tempos e fator de escala.
