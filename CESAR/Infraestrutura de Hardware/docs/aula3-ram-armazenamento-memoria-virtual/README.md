@@ -1,12 +1,27 @@
 # Aula 3 — RAM, Armazenamento e Memória Virtual
 
+Duração: 20 min. Foco em RAM, armazenamento, memória virtual, paginação e swap.
+
+## Navegação
+
+- [Voltar ao índice do laboratório](../../README.md)
+- [Aula anterior: Hierarquia de Memória e Caches](../aula2-hierarquia-memoria-caches/README.md)
+- [Próxima aula: Barramentos, I/O e Interrupções](../aula4-barramentos-io-interrupcoes/README.md)
+
+## Ponte com a teoria
+
+Este bloco integra RAM, armazenamento e memória virtual no mesmo experimento.
+A meta é observar, com dados, como o sistema operacional cria a abstração de
+memória virtual e qual é o custo quando ocorre paginação para disco.
+
 ## Descrição
 
-Este bloco quebra a confusão clássica do aluno entre **memória** (RAM) e **armazenamento** (disco). A Memória Virtual *unifica* os dois sob uma abstração elegante — mas a física continua lá, cobrando o pedágio. Os alunos vão medir a diferença e ver, em tempo real, o sistema operacional fazendo paginação sob pressão.
+Este bloco separa com clareza memória (RAM) e armazenamento (disco), mostrando como a memória virtual conecta os dois. Você vai medir a diferença de desempenho e observar paginação em tempo real.
 
 ## Objetivos de Aprendizagem
 
 Ao final deste bloco, o aluno deve ser capaz de:
+
 - Comparar largura de banda de RAM, NVMe, SATA SSD e HDD em **ordens de grandeza**
 - Distinguir Working Set, Private Bytes e Virtual Size de um processo
 - Explicar o que é uma page fault e diferenciar minor de major
@@ -46,19 +61,19 @@ rm /tmp/fio-test
 
 ### Atividade 3.2 — Comparação visual com a RAM (2 min)
 
-Os alunos pegam a largura de banda da RAM medida no **Bloco 2** e comparam com o que mediram aqui. A tabela abaixo (preencher no relatório) revela a hierarquia completa:
+Pegue a largura de banda da RAM medida no **Bloco 2** e compare com os números deste bloco. A tabela abaixo revela a hierarquia completa:
 
-| Componente | Largura de banda medida | Latência típica |
-|------------|--------------------------|------------------|
-| Cache L1 | (do Bloco 2) | ~1 ns |
-| Cache L3 | (do Bloco 2) | ~10-15 ns |
-| RAM | (do Bloco 2) | ~70-100 ns |
-| SSD NVMe (SEQ1M) | | ~50-200 µs |
-| SSD NVMe (RND4K) | | ~50-200 µs |
-| SSD SATA (se disponível) | | ~80-300 µs |
-| HDD (se disponível) | | ~5-15 ms |
+| Componente               | Largura de banda medida | Latência típica |
+| ------------------------ | ----------------------- | --------------- |
+| Cache L1                 | (do Bloco 2)            | ~1 ns           |
+| Cache L3                 | (do Bloco 2)            | ~10-15 ns       |
+| RAM                      | (do Bloco 2)            | ~70-100 ns      |
+| SSD NVMe (SEQ1M)         |                         | ~50-200 µs      |
+| SSD NVMe (RND4K)         |                         | ~50-200 µs      |
+| SSD SATA (se disponível) |                         | ~80-300 µs      |
+| HDD (se disponível)      |                         | ~5-15 ms        |
 
-> **Observação:** sublinhe no quadro a diferença em ordens de grandeza — cache em **nanossegundos**, SSD em **microssegundos**, HDD em **milissegundos**. Cada salto é ~1000x.
+> Observação: destaque as ordens de grandeza na sua análise. Cache opera em **nanossegundos**, SSD em **microssegundos** e HDD em **milissegundos**.
 
 ### Atividade 3.3 — Memória Virtual em tempo real (10 min)
 
@@ -96,7 +111,7 @@ sudo cat /proc/$PID/maps | head -20
 
 ### Atividade 3.4 — Pressão de memória controlada (5 min)
 
-> **Aviso ao instrutor:** este experimento força swap. Avise os alunos para fechar trabalhos importantes. Se a máquina não tiver swap configurado, pule para a parte do script Python.
+> Aviso importante: este experimento pode forçar swap. Feche trabalhos importantes antes de executar. Se a máquina não tiver swap configurado, use apenas o script Python.
 
 #### Linux — stress-ng
 
@@ -108,7 +123,8 @@ watch -n 1 "free -h; echo; vmstat 1 1"
 stress-ng --vm 2 --vm-bytes 80% --timeout 30s
 ```
 
-Os alunos observam:
+Observe durante o teste:
+
 - Queda do `free`
 - Aumento de `swap used` (se houver swap)
 - Colunas `si` e `so` do vmstat se movendo (swap-in/swap-out)
@@ -128,22 +144,18 @@ Este script aloca buffers progressivamente maiores e mede o tempo de acesso, mos
 ## Perguntas Reflexivas
 
 1. Por que o **Virtual Size** de um processo pode ser **maior que a RAM física** da máquina? O que isso revela sobre o que de fato é um endereço de memória que aparece no seu programa em C?
-2. Quando o sistema faz swap, a penalidade é de quantas ordens de grandeza comparada ao acesso à RAM? **Use os números que vocês mediram** para responder.
-3. Defina **page fault**. Toda page fault é "ruim"? Distingua *minor page fault* de *major page fault*.
+2. Quando o sistema faz swap, a penalidade é de quantas ordens de grandeza comparada ao acesso à RAM? **Use os números medidos por você** para responder.
+3. Defina **page fault**. Toda page fault é "ruim"? Distingua _minor page fault_ de _major page fault_.
 4. Em servidores de banco de dados, configura-se `vm.swappiness=1`. Por quê? E em um desktop comum, por que o padrão é `60`?
-5. RND4K é dramaticamente mais lento que SEQ1M, mesmo no mesmo SSD. Por quê? *(Dica: pense em latência vs throughput, e no que o controlador NAND precisa fazer.)*
-6. Um colega afirma: *"comprei um SSD NVMe novo, agora meu PC vai ser mais rápido que ter mais RAM"*. Argumente, com **dados medidos hoje**, por que essa afirmação está parcialmente errada.
+5. RND4K é dramaticamente mais lento que SEQ1M, mesmo no mesmo SSD. Por quê? _(Dica: pense em latência vs throughput, e no que o controlador NAND precisa fazer.)_
+6. Um colega afirma: _"comprei um SSD NVMe novo, agora meu PC vai ser mais rápido que ter mais RAM"_. Argumente, com **dados medidos hoje**, por que essa afirmação está parcialmente errada.
 
 ---
 
 ## Conexão com o próximo bloco
 
-> *"Vimos que o NVMe entrega ~3-7 GB/s. Isso passa por **PCIe**. No próximo bloco, vamos descobrir quantas 'pistas' de PCIe seu SSD usa, qual é o teto teórico, e como o sistema lida com **interrupções** geradas pelo SSD, teclado, mouse e rede."*
+> No próximo bloco, você vai mapear o PCIe da máquina, estimar a banda teórica do link e observar interrupções geradas por dispositivos de I/O.
 
 ## Scripts deste bloco
 
 - [`scripts/teste_memoria_virtual.py`](./scripts/teste_memoria_virtual.py) — visualiza a inflexão entre RAM e swap
-
----
-
-[← Aula 2](../aula2-hierarquia-memoria-caches/README.md) | [Índice](../../README.md) | **Aula 3** | [Aula 4 →](../aula4-barramentos-io-interrupcoes/README.md)

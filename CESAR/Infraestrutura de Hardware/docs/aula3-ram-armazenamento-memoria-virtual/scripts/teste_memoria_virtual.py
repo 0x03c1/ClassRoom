@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Teste de Memória Virtual - Aula 3 (Infraestrutura de Hardware)
-Prof. Ronierison Maciel
+Prof. Roni Maciel
 
 Aloca buffers progressivamente maiores e mede o tempo de acesso aleatório.
 Quando o tamanho do buffer ultrapassa a RAM disponível, o sistema começa
