@@ -33,8 +33,13 @@
 
 /* TODO: Implemente aqui */
 int meu_strlen(const char *s) {
-    return 0;
-}
+    
+    if (*s == '\0') {
+        return 0;
+    };
+    
+    return 1 + meu_strlen(s+1);
+};
 
 int main(void) {
     char buffer[200];
