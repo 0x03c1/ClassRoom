@@ -1,6 +1,6 @@
 # Guia de Setup — Antes do Laboratório
 
-> Este guia deve ser seguido **antes** do dia do laboratório. Estimativa: 30-45 min.
+> Este guia deve ser seguido **antes** do dia do laboratório.
 
 ## 1. Windows
 
