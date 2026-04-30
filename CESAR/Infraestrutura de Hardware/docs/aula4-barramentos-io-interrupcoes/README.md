@@ -1,6 +1,6 @@
 # Aula 4 — Barramentos, I/O e Interrupções
 
-Duração: 15 min. Foco em PCIe, interrupções, DMA, exceções e I/O.
+Foco em PCIe, interrupções, DMA, exceções e I/O.
 
 ## Navegação
 
@@ -31,7 +31,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ## Passo a Passo da Prática
 
-### Atividade 4.1 — Mapeando o barramento PCIe (7 min)
+### Atividade 4.1 — Mapeando o barramento PCIe
 
 #### No Linux (monitoramento)
 
@@ -73,7 +73,7 @@ sudo lspci -vv -s <ID_GPU> | grep -E "LnkCap|LnkSta"
 | PCIe 4.0    | ~1.97 GB/s     | ~7.88 GB/s  | ~31.5 GB/s |
 | PCIe 5.0    | ~3.94 GB/s     | ~15.75 GB/s | ~63 GB/s   |
 
-### Atividade 4.2 — Interrupções em tempo real (8 min)
+### Atividade 4.2 — Interrupções em tempo real
 
 #### No Linux
 
