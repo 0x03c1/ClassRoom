@@ -51,11 +51,11 @@ relatorio-template/
 
 | Bloco | Documento                                                                                        | Duração |
 | ----- | ------------------------------------------------------------------------------------------------ | ------- |
-| 1     | [Anatomia da CPU, Pipeline e Multicore](./docs/aula1-anatomia-cpu-pipeline-multicore/README.md)  | 25 min  |
-| 2     | [Hierarquia de Memória e Caches](./docs/aula2-hierarquia-memoria-caches/README.md)               | 20 min  |
-| 3     | [RAM, Armazenamento e Memória Virtual](./docs/aula3-ram-armazenamento-memoria-virtual/README.md) | 20 min  |
-| 4     | [Barramentos, I/O e Interrupções](./docs/aula4-barramentos-io-interrupcoes/README.md)            | 15 min  |
-| 5     | [Síntese e Benchmark Integrado](./docs/aula5-sintese-benchmark-integrado/README.md)              | 20 min  |
+| 1     | [Anatomia da CPU, Pipeline e Multicore](./docs/aula1-anatomia-cpu-pipeline-multicore/README.md)  | 00 min  |
+| 2     | [Hierarquia de Memória e Caches](./docs/aula2-hierarquia-memoria-caches/README.md)               | 00 min  |
+| 3     | [RAM, Armazenamento e Memória Virtual](./docs/aula3-ram-armazenamento-memoria-virtual/README.md) | 00 min  |
+| 4     | [Barramentos, I/O e Interrupções](./docs/aula4-barramentos-io-interrupcoes/README.md)            | 00 min  |
+| 5     | [Síntese e Benchmark Integrado](./docs/aula5-sintese-benchmark-integrado/README.md)              | 00 min  |
 | Apoio | [Análise de Performance de Algoritmos](./docs/analise-performance-algoritmos/README.md)          | Extra   |
 | -     | [Modelo de Relatório](./relatorio-template/relatorio.md)                                         | -       |
 
