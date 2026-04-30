@@ -1,6 +1,6 @@
 # Aula 1 — Anatomia da CPU: Pipeline e Multicore
 
-Duração: 25 min. Foco em pipeline, multicore, paralelismo e Lei de Amdahl.
+Foco em pipeline, multicore, paralelismo e Lei de Amdahl.
 
 ## Navegação
 
@@ -28,7 +28,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 - Calcular fator de escala paralelo e relacioná-lo com a Lei de Amdahl
 - Explicar, em linhas gerais, o que "quebra" o pipeline (hazards, branch misprediction)
 
-## Contexto inicial (10 min)
+## Contexto inicial
 
 1. Observe os dois cenários de máquinas apresentados na abertura: mesma frequência nominal, mesma RAM, mas tempos de compilação diferentes.
 2. Registre com sua dupla as hipóteses para explicar a diferença.
@@ -39,7 +39,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ## Passo a Passo da Prática
 
-### Atividade 1.1 — Inspeção da CPU (10 min)
+### Atividade 1.1 — Inspeção da CPU
 
 #### No Windows
 
@@ -70,9 +70,9 @@ watch -n 1 "grep 'cpu MHz' /proc/cpuinfo"
 
 > No `lscpu`, identifique os campos: `Socket(s)`, `Core(s) per socket`, `Thread(s) per core`, `CPU max MHz`, `Flags` (procure `sse4_2`, `avx`, `avx2`).
 
-### Atividade 1.2 — Pipeline e Paralelismo na Prática (15 min)
+### Atividade 1.2 — Pipeline e Paralelismo na Prática
 
-#### Experimento 1: Cinebench R23 (Windows) — 8 min
+#### Experimento 1: Cinebench R23 (Windows)
 
 1. Abra o **Cinebench R23**.
 2. Execute primeiro **Single Core** (clique no botão "Start" da linha Single
@@ -89,7 +89,7 @@ watch -n 1 "grep 'cpu MHz' /proc/cpuinfo"
 
 6. Compare com o **número de threads lógicas** identificado na atividade 1.1.
 
-#### Experimento 2: Sysbench (Linux) — alternativa ou complementar — 7 min
+#### Experimento 2: Sysbench (Linux) — alternativa ou complementar
 
 ```bash
 # Single thread
@@ -99,7 +99,7 @@ sysbench cpu --threads=1 --time=10 run | grep "events per second"
 sysbench cpu --threads=N --time=10 run | grep "events per second"
 ```
 
-#### Experimento 3: Script Python para visualizar o paralelismo — 5 min
+#### Experimento 3: Script Python para visualizar o paralelismo
 
 Use o script [`scripts/teste_paralelismo.py`](./scripts/teste_paralelismo.py) deste repositório (funciona igual no Windows e Linux):
 
@@ -140,7 +140,7 @@ Registre as respostas **no relatório** ao final do bloco:
 
 ---
 
-## Atividade opcional — Conectando com Assembly e MARS (5 min)
+## Atividade opcional — Conectando com Assembly e MARS
 
 > Esta atividade é **opcional** e conecta o experimento de benchmark com o que você já praticou em MARS.
 
