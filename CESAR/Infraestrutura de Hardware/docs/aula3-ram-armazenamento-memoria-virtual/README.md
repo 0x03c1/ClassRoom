@@ -1,6 +1,6 @@
 # Aula 3 — RAM, Armazenamento e Memória Virtual
 
-Duração: 20 min. Foco em RAM, armazenamento, memória virtual, paginação e swap.
+Foco em RAM, armazenamento, memória virtual, paginação e swap.
 
 ## Navegação
 
@@ -31,7 +31,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ## Passo a Passo da Prática
 
-### Atividade 3.1 — Medindo o armazenamento (8 min)
+### Atividade 3.1 — Medindo o armazenamento
 
 #### No Windows — CrystalDiskMark
 
@@ -59,7 +59,7 @@ rm /tmp/fio-test
 
 > **Cuidado:** o `fio` com `--direct=1` ignora o cache do SO. Sem essa flag, vocês mediriam o cache de página, não o disco real.
 
-### Atividade 3.2 — Comparação visual com a RAM (2 min)
+### Atividade 3.2 — Comparação visual com a RAM
 
 Pegue a largura de banda da RAM medida no **Bloco 2** e compare com os números deste bloco. A tabela abaixo revela a hierarquia completa:
 
@@ -75,7 +75,7 @@ Pegue a largura de banda da RAM medida no **Bloco 2** e compare com os números 
 
 > Observação: destaque as ordens de grandeza na sua análise. Cache opera em **nanossegundos**, SSD em **microssegundos** e HDD em **milissegundos**.
 
-### Atividade 3.3 — Memória Virtual em tempo real (10 min)
+### Atividade 3.3 — Memória Virtual em tempo real
 
 #### No Windows
 
@@ -109,7 +109,7 @@ cat /proc/$PID/status | grep -E "VmSize|VmRSS|VmSwap|VmPeak"
 sudo cat /proc/$PID/maps | head -20
 ```
 
-### Atividade 3.4 — Pressão de memória controlada (5 min)
+### Atividade 3.4 — Pressão de memória controlada
 
 > Aviso importante: este experimento pode forçar swap. Feche trabalhos importantes antes de executar. Se a máquina não tiver swap configurado, use apenas o script Python.
 
