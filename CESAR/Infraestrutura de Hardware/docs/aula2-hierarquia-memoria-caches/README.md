@@ -1,6 +1,6 @@
 # Aula 2 — A Pirâmide da Memória: Hierarquia de Caches
 
-Duração: 20 min. Foco em cache L1, L2, L3, latência e localidade.
+Foco em cache L1, L2, L3, latência e localidade.
 
 ## Navegação
 
@@ -31,7 +31,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ## Passo a Passo da Prática
 
-### Atividade 2.1 — Medindo a latência por nível (10 min)
+### Atividade 2.1 — Medindo a latência por nível
 
 #### No Windows — AIDA64 Cache & Memory Benchmark
 
@@ -67,7 +67,7 @@ sudo perf stat -e cache-references,cache-misses,L1-dcache-loads,L1-dcache-load-m
 
 A taxa `cache-misses / cache-references` mostra quanta pressão o programa colocou sobre o cache.
 
-### Atividade 2.2 — O experimento da localidade (10 min)
+### Atividade 2.2 — O experimento da localidade
 
 Use o script [`scripts/teste_localidade.py`](./scripts/teste_localidade.py) deste repositório:
 
