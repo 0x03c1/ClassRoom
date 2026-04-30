@@ -1,6 +1,6 @@
 # Aula 5 — Síntese: Benchmark Integrado e Resolução do Mistério
 
-Duração: 20 min + 10 min de encerramento. Foco em workload, profiling e análise integrada.
+Foco em workload, profiling e análise integrada.
 
 ## Navegação
 
@@ -33,7 +33,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ## Passo a Passo da Prática
 
-### Atividade 5.1 — Escolha o seu workload (2 min)
+### Atividade 5.1 — Escolha o seu workload
 
 Cada dupla escolhe **um** workload entre as opções:
 
@@ -47,7 +47,7 @@ Cada dupla escolhe **um** workload entre as opções:
 
 > Recomendação: se houver dúvida na escolha, use o **script `workload_completo.py`**, pois ele exercita CPU, cache e memória de forma controlada e gera resultados comparáveis entre máquinas.
 
-### Atividade 5.2 — Perfilar o workload (10 min)
+### Atividade 5.2 — Perfilar o workload
 
 #### No Linux — perf stat (poderoso)
 
@@ -94,7 +94,7 @@ Este script:
 - Coleta métricas de CPU, memória e disco em paralelo (via psutil)
 - Gera um relatório final com inferência de gargalo
 
-### Atividade 5.3 — Tabela de evidências (3 min)
+### Atividade 5.3 — Tabela de evidências
 
 Preencha no relatório:
 
@@ -107,7 +107,7 @@ Preencha no relatório:
 | Multicore       | Threads efetivamente em uso   |                        |
 | PCIe            | Saturação do link PCIe do SSD |                        |
 
-### Atividade 5.4 — Resolução do mistério (5 min)
+### Atividade 5.4 — Resolução do mistério
 
 Retome **a lista de hipóteses iniciais** (do Bloco 0). Classifique cada hipótese:
 
@@ -138,7 +138,7 @@ Estas são as perguntas-síntese, valem como nota:
 
 ---
 
-## Encerramento (10 min — fora do bloco de 20 min)
+## Encerramento
 
 ### Síntese visual
 
