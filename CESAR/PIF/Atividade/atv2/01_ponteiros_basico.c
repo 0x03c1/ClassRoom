@@ -43,12 +43,3 @@ int main(void) {
 
     return 0;
 }
-
-/* =====================================================================
- * PERGUNTAS PARA REFLETIR:
- * 1. O endereço de 'idade' muda toda vez que você executa o programa?
- *    Por quê?
- * 2. O que aconteceria se você fizesse: int *p = NULL; printf("%d", *p);
- *    (NÃO TESTE — apenas pense na resposta!)
- * =====================================================================
- */
