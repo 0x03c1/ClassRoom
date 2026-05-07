@@ -7,7 +7,7 @@ empírica, profiling e comparação entre linguagens.
 
 - [Voltar ao índice do laboratório](../../README.md)
 - [Ponte teoria-prática](../teoria-pratica-bridge/README.md)
-- [Modelo de relatório](../../relatorio-template/relatorio.md)
+- [Modelo de relatório](../relatorio-template/relatorio.md)
 
 ## Para que serve este material?
 
@@ -34,7 +34,7 @@ analise-performance-algoritmos/
 └── exemplos/
     ├── ordenacao.py
     ├── ordenacao.c
-    └── ordenacao.java
+    └── Ordenacao.java
 ```
 
 ## Acesso rápido
@@ -49,7 +49,7 @@ analise-performance-algoritmos/
 
 - [ordenacao.py](./exemplos/ordenacao.py) — exemplo em Python
 - [ordenacao.c](./exemplos/ordenacao.c) — exemplo em C
-- [ordenacao.java](./exemplos/ordenacao.java) — exemplo em Java
+- [Ordenacao.java](./exemplos/Ordenacao.java) — exemplo em Java
 
 ## Casos de uso
 
@@ -94,7 +94,7 @@ Exemplos de apoio:
 
 - [ordenacao.py](./exemplos/ordenacao.py)
 - [ordenacao.c](./exemplos/ordenacao.c)
-- [ordenacao.java](./exemplos/ordenacao.java)
+- [Ordenacao.java](./exemplos/Ordenacao.java)
 
 O script já vem com algoritmos prontos para comparação:
 
@@ -154,10 +154,25 @@ o tempo está sendo gasto, e o `perf stat` ajuda a explicar o motivo.
 
 ```bash
 sudo apt install -y linux-tools-common linux-tools-generic hyperfine
+
+# (Se "linux-tools-$(uname -r)" não vier junto, instale também)
+sudo apt install -y "linux-tools-$(uname -r)" || true
+
 git clone --depth=1 https://github.com/brendangregg/FlameGraph.git ~/FlameGraph
+
+# Adiciona ao PATH para sessões futuras
 echo 'export PATH="$HOME/FlameGraph:$PATH"' >> ~/.bashrc
+
+# E para ESTA sessão também (essencial — sem isso, flamegraph.pl
+# ainda não estará no PATH)
+export PATH="$HOME/FlameGraph:$PATH"
+
 pip install py-spy --break-system-packages
 ```
+
+> **Nota WSL2:** o pacote `linux-tools-$(uname -r)` pode não existir, pois
+> o kernel é da Microsoft. Nesse caso, é necessário compilar `perf` do
+> source. Veja: <https://github.com/microsoft/WSL2-Linux-Kernel>.
 
 ### Fluxo recomendado
 
@@ -168,13 +183,18 @@ hyperfine --warmup 3 \
   './versao_otimizada' \
   --export-markdown comparacao.md
 
-# 2. Profiling profundo
-sudo perf record -F 99 -a -g -- ./versao_lenta
+# 2. Profiling profundo (apenas o processo, NÃO o sistema todo)
+sudo perf record -F 99 -g -- ./versao_lenta
 sudo perf script | stackcollapse-perf.pl | flamegraph.pl > flame.svg
 
 # 3. Abrir o resultado
 xdg-open flame.svg
 ```
+
+> **Sobre `-a` (system-wide):** se quiser ver tudo que está rodando no
+> sistema (útil para investigar latência de SO inteiro), adicione `-a` ao
+> `perf record`. Para perfilar **só o seu programa**, omita — o flame
+> graph fica muito mais legível, sem ruído de daemons e idle do kernel.
 
 Script de apoio para medições: [flame_graph_helper.sh](./scripts/flame_graph_helper.sh)
 
@@ -239,6 +259,14 @@ O script `comparador_stacks.py`:
 
 ### Uso
 
+Para Java, primeiro compile (gera `Ordenacao.class` no mesmo diretório):
+
+```bash
+javac exemplos/Ordenacao.java
+```
+
+Depois rode a comparação:
+
 ```bash
 python3 scripts/comparador_stacks.py \
   --tamanhos 1000 5000 10000 50000 100000 \
@@ -246,7 +274,7 @@ python3 scripts/comparador_stacks.py \
   --comandos \
     "python3 exemplos/ordenacao.py" \
     "./exemplos/ordenacao_c" \
-    "java -cp exemplos/ Ordenacao"
+    "java -cp exemplos Ordenacao"
 ```
 
   Script de medição: [comparador_stacks.py](./scripts/comparador_stacks.py)
@@ -255,7 +283,7 @@ python3 scripts/comparador_stacks.py \
 
 - [ordenacao.py](./exemplos/ordenacao.py)
 - [ordenacao.c](./exemplos/ordenacao.c)
-- [ordenacao.java](./exemplos/ordenacao.java)
+- [Ordenacao.java](./exemplos/Ordenacao.java)
 
 ### Saída esperada
 

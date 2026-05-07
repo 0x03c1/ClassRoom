@@ -54,7 +54,12 @@ cmd_setup() {
     # perf
     if ! command -v perf &>/dev/null; then
         cor_amarela "  Instalando perf..."
-        sudo apt install -y linux-tools-common linux-tools-generic linux-tools-$(uname -r)
+        if ! sudo apt install -y linux-tools-common linux-tools-generic "linux-tools-$(uname -r)" 2>/dev/null; then
+            cor_vermelha "  ⚠ Não foi possível instalar perf via apt"
+            cor_vermelha "    (kernel não suportado por linux-tools-\$(uname -r))."
+            cor_amarela  "    Em WSL2 ou kernel custom, é necessário compilar perf"
+            cor_amarela  "    do source: https://github.com/microsoft/WSL2-Linux-Kernel"
+        fi
     else
         cor_verde "  ✓ perf já instalado"
     fi
