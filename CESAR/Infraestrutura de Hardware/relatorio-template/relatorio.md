@@ -1,15 +1,26 @@
-# Relatório de Laboratório — Infraestrutura de Hardware
+# Relatório do Laboratório — Infraestrutura de Hardware
 
-> Disciplina: Infraestrutura de Hardware | Prof. Ronierison Maciel
-> Data do laboratório: ___/___/______
-> Dupla: __________________________ e__________________________
-> Máquina utilizada: ____________________________________
+> **Como usar:** copie este arquivo para a sua pasta de trabalho, renomeie
+> para `relatorio_<seu_nome>.md` e preencha à medida que executa as
+> atividades. A ideia é que ao final do laboratório você tenha um
+> documento técnico mostrando como sua máquina se comporta.
 
 ---
 
-## 0. Hipóteses iniciais
+## Identificação
 
-Antes do laboratório, listamos cinco métricas que usaríamos para comparar duas máquinas:
+- **Dupla / trio:** ___________________________________________________
+- **Máquina(s) usadas:** ______________________________________________
+- **Sistema operacional:** ____________________________________________
+- **Data:** ___ / ___ / 20___
+
+---
+
+## Bloco 0 — Hipóteses iniciais
+
+> *Antes* de qualquer medição, registre **5 métricas** que você usaria
+> para comparar duas máquinas. Volte a esta lista no fim do laboratório
+> e veja o que mudou no seu raciocínio.
 
 1.
 2.
@@ -17,219 +28,122 @@ Antes do laboratório, listamos cinco métricas que usaríamos para comparar dua
 4.
 5.
 
-Hipóteses levantadas em sala (registrar para revisitar no Bloco 5):
+---
 
-- [ ]
-- [ ]
-- [ ]
+## Bloco 1 — Anatomia da CPU (Aula 1)
+
+| Métrica                                  | Valor   |
+| ---------------------------------------- | ------- |
+| Modelo da CPU                            |         |
+| Arquitetura (x86_64 / aarch64 / ...)     |         |
+| Núcleos físicos                          |         |
+| Threads lógicas (SMT/HT)                 |         |
+| Frequência base / boost                  |         |
+| L1d / L1i / L2 / L3                      |         |
+| Conjunto SIMD mais recente               |         |
+| Cinebench R23 — single                   |         |
+| Cinebench R23 — multi                    |         |
+| Fator de escala (multi/single)           |         |
+| Speedup observado em `teste_paralelismo` |         |
+
+**Observações / surpresas:**
+
+```
+(o fator de escala bate com o número de threads? Se não, por quê?)
+```
 
 ---
 
-## 1. Anatomia da CPU (Bloco 1)
+## Bloco 2 — Hierarquia de Memória (Aula 2)
 
-### Configuração identificada
+| Tamanho do array | Vazão (`mbw -t0`) |
+| ---------------- | ----------------- |
+| 16 MiB           |                   |
+| 128 MiB          |                   |
+| 1024 MiB         |                   |
 
-| Métrica                           | Valor |
-| --------------------------------- | ----- |
-| Modelo da CPU                     |       |
-| Núcleos físicos / Threads lógicas | /     |
-| Frequência base (GHz)             |       |
-| Frequência turbo observada (GHz)  |       |
-| Cache L1 / L2 / L3                | / /   |
-| Instruction sets relevantes       |       |
+| `teste_localidade.py` | Tempo (s)  |
+| --------------------- | ---------- |
+| Loop A (linhas)       |            |
+| Loop B (colunas)      |            |
+| Razão B/A             |            |
 
-### Benchmark de paralelismo
+**Observações:**
 
-| Métrica                        | Valor |
-| ------------------------------ | ----- |
-| Cinebench Single Core          |       |
-| Cinebench Multi Core           |       |
-| Fator de escala (Multi/Single) |       |
-| Fator ideal (= nº de threads)  |       |
-| Eficiência paralela (%)        |       |
-
-__Screenshots colados:__ _(CPU-Z, HWiNFO, Cinebench)_
-
-### Respostas às perguntas reflexivas (Bloco 2)
-
-1. __Por que o fator de escala é menor que o número de threads?__
-
-2. __Por que a carga "pula" entre núcleos no teste single-core?__
-
-3. __Pipeline com N estágios — ganho ideal e o que quebra?__
-
-4. __Tradução entre GHz e pontos via CPI?__
+```
+(em qual tamanho de array a vazão começa a cair? Bate com o L3 da CPU?)
+```
 
 ---
 
-## 2. Hierarquia de Memória (Bloco 2)
+## Bloco 3 — RAM e Memória Virtual (Aula 3)
 
-### Latência por nível
+| Métrica                          | Valor |
+| -------------------------------- | ----- |
+| RAM total                        |       |
+| RAM disponível em repouso        |       |
+| Swap total / em uso              |       |
+| `fio` seq read (MB/s)            |       |
+| `fio` random read 4k (IOPS)      |       |
+| Variação de `si`/`so` durante stress-ng |       |
 
-| Nível | Tamanho | Latência (ns) | Banda (GB/s) |
-| ----- | ------- | ------------- | ------------ |
-| L1    |         |               |              |
-| L2    |         |               |              |
-| L3    |         |               |              |
-| RAM   |         |               |              |
+**Anote o nome do navegador escolhido para `/proc/$PID/status`:** _____________
 
-### Experimento de localidade
+**Observações:**
 
-| Padrão                       | Tempo (s) | Razão |
-| ---------------------------- | --------- | ----- |
-| Linha por linha (sequencial) |           | 1.00  |
-| Coluna por coluna (saltando) |           |       |
-
-### Respostas às perguntas reflexivas (Bloco 3)
-
-1. __Por que a latência cresce em ordens de grandeza?__
-
-2. __Vetor de 100 MB vs 200 KB — qual é mais rápido em loop sequencial?__
-
-3. __Localidade temporal e espacial — exemplos em código:__
-
-4. __Mesmo nº de operações, tempos diferentes — por quê?__
-
-5. __Disputa por L3 e fator de escala paralelo:__
+```
+(o que acontece com o navegador conforme stress-ng pressiona a RAM?)
+```
 
 ---
 
-## 3. RAM, Armazenamento e Memória Virtual (Bloco 3)
+## Bloco 4 — Barramentos, I/O e Interrupções (Aula 4)
 
-### Hierarquia completa
+| Dispositivo PCIe       | LnkCap (geração × largura) | LnkSta |
+| ---------------------- | -------------------------- | ------ |
+| Controlador NVMe       |                            |        |
+| GPU                    |                            |        |
+| Outro (ex: rede 10G)   |                            |        |
 
-| Componente           | Banda medida | Latência típica |
-| -------------------- | ------------ | --------------- |
-| L1                   |              | ~1 ns           |
-| L3                   |              | ~10-15 ns       |
-| RAM                  |              | ~70-100 ns      |
-| SSD NVMe SEQ1M       |              | ~50-200 µs      |
-| SSD NVMe RND4K       |              | ~50-200 µs      |
-| SSD SATA (se houver) |              | ~80-300 µs      |
-| HDD (se houver)      |              | ~5-15 ms        |
+**Top 3 IRQs durante o `dd`:**
 
-### Memória virtual de um processo escolhido
-
-Processo: _________________
-
-| Métrica               | Valor |
-| --------------------- | ----- |
-| Working Set / VmRSS   |       |
-| Private Bytes         |       |
-| Virtual Size / VmSize |       |
-
-### Pressão de memória — observações
-
-_(O que aconteceu com `free`/`vmstat` quando aplicamos pressão? Houve swap?)_
-
-### Respostas às perguntas reflexivas
-
-1. __Virtual Size > RAM física — o que isso revela?__
-
-2. __Penalidade do swap em ordens de grandeza:__
-
-3. __Page fault — minor vs major:__
-
-4. __Por que `vm.swappiness=1` em servidores de banco?__
-
-5. __RND4K vs SEQ1M — por que tão diferente?__
-
-6. __"NVMe é melhor que mais RAM" — refute com dados:__
+```
+(saída de cat /proc/interrupts antes e depois)
+```
 
 ---
 
-## 4. Barramentos, I/O e Interrupções (Bloco 4)
+## Bloco 5 — Síntese e Benchmark Integrado (Aula 5)
 
-### PCIe identificado
+| Workload (`workload_completo.py`)        | Resultado |
+| ---------------------------------------- | --------- |
+| CPU-bound — multiplicações/s             |           |
+| Memory-bound — bandwidth (GB/s)          |           |
+| I/O-bound — throughput (MB/s)            |           |
+| Cores >50% no fim                        |           |
 
-| Dispositivo | Geração | Largura | Banda teórica | Banda real medida |
-| ----------- | ------- | ------- | ------------- | ----------------- |
-| SSD NVMe    |         |         |               |                   |
-| GPU         |         |         |               |                   |
-| Rede        |         |         |               |                   |
+**Gargalo dominante (segundo o script):** _________________________________
 
-### Interrupções observadas
+**Você concorda? Justifique:**
 
-#### Quais IRQs subiram com cada ação?
-
-- Mexer mouse: IRQ ____
-- Digitar: IRQ ____
-- Ping: IRQ ____
-- Cópia de arquivo: IRQ ____
-
-### Respostas às perguntas reflexivas (Bloco 4)
-
-1. __PCIe 4.0 x16 vs RAM — onde fica o gargalo numa GPU?__
-
-2. __Por que existem interrupções? E por que polling é pior?__
-
-3. __Quando polling é melhor que interrupção?__
-
-4. __Cadeia tecla-pressionada → tela:__
-
-5. __NVMe 7000 MB/s em PCIe 3.0 x4 — qual o teto real?__
-
-6. __DMA — o que é e como reduz carga da CPU?__
+```
+```
 
 ---
 
-## 5. Síntese e Resolução do Mistério (Bloco 5)
+## Bloco final — Volte ao Bloco 0
 
-### Workload escolhido
+Reabra a sua lista do Bloco 0. Quais métricas você manteria? Quais
+trocaria? Por quê?
 
-Workload: __________________________________________
-
-### Métricas integradas
-
-| Subsistema      | Métrica          | Valor medido |
-| --------------- | ---------------- | ------------ |
-| CPU             | IPC              |              |
-| Cache           | Taxa de miss (%) |              |
-| Memória virtual | Page faults / s  |              |
-| Armazenamento   | Throughput       |              |
-| Multicore       | Threads em uso   |              |
-| PCIe            | Saturação        |              |
-
-### Hipóteses revisitadas
-
-#### Classificação das hipóteses do Bloco 0
-
-| Hipótese inicial | Status                          | Evidência |
-| ---------------- | ------------------------------- | --------- |
-|                  | Confirmada / Refutada / Parcial |           |
-|                  | Confirmada / Refutada / Parcial |           |
-|                  | Confirmada / Refutada / Parcial |           |
-
-### Perguntas-síntese (valem nota)
-
-__1. Qual é o gargalo dominante da minha máquina?__ Justifique com 3 métricas medidas.
-
-__2. Onde investir R$ 500 em upgrade?__ Defesa técnica:
-
-__3. Xeon 32C/2.5GHz vs i9 8C/5.5GHz — quem ganha em qual cenário?__ Use Lei de Amdahl:
-
-#### 4. Como cada conceito afetou meu workload? (uma frase cada)
-
-- Pipeline e ILP:
-- Cache:
-- Memória virtual:
-- PCIe / barramento:
-- Multicore:
+```
+```
 
 ---
 
-## 6. Análise Crítica Comparativa (1 página)
+## Anexos
 
-### Orientação
-
-Compare a máquina do laboratório com sua máquina pessoal de casa.
-Use métricas. Onde estão as maiores diferenças? Por quê?
-O que o usuário comum não percebe?
-
----
-
-## Referências consultadas
-
-- Patterson, D. A., & Hennessy, J. L. _Computer Organization and Design_.
-- Stallings, W. _Computer Organization and Architecture_.
-- Documentação das ferramentas usadas (citar).
+- Saída de `info_cpu.sh`: `info_cpu_AAAAMMDD_HHMMSS.txt`
+- Gráfico de complexidade: `complexidade_empirica.png`
+- Comparação de stacks: `comparacao_stacks.png`
+- Flame graph (se feito): `flame.svg`
