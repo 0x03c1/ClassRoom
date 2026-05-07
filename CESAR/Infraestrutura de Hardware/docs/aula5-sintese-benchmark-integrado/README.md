@@ -6,7 +6,7 @@ Foco em workload, profiling e análise integrada.
 
 - [Voltar ao índice do laboratório](../../README.md)
 - [Aula anterior: Barramentos, I/O e Interrupções](../aula4-barramentos-io-interrupcoes/README.md)
-- [Modelo de relatório](../../relatorio-template/relatorio.md)
+- [Modelo de relatório](../relatorio-template/relatorio.md)
 
 ## Ponte com a teoria
 
@@ -40,7 +40,7 @@ Cada dupla escolhe **um** workload entre as opções:
 | Opção | Workload                                                                         | O que estressa        |
 | ----- | -------------------------------------------------------------------------------- | --------------------- |
 | A     | Compilar um projeto C médio (clone do `linux/tools/perf` ou similar)             | CPU + I/O + memória   |
-| B     | `7z b` (benchmark interno do 7-Zip)                                              | CPU + cache           |
+| B     | `7z b` (benchmark interno do 7-Zip) — instale com `sudo apt install p7zip-full` no Linux, ou adicione `C:\Program Files\7-Zip` ao PATH no Windows | CPU + cache           |
 | C     | Multiplicação de matrizes em Python/NumPy 5000x5000                              | CPU + memória + cache |
 | D     | `ffmpeg` convertendo um vídeo de 1 min para outro codec                          | CPU intensivo + I/O   |
 | E     | Workload do script `scripts/workload_completo.py` (recomendado se houver dúvida) | Tudo, controlado      |

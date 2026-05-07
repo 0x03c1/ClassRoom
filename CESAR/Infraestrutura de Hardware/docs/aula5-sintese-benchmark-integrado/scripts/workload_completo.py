@@ -5,20 +5,24 @@ Prof. Roni Maciel
 
 Workload controlado com 3 fases distintas:
   1. CPU-bound (cálculo intensivo, dados pequenos — fica em cache)
-  2. Memory-bound (varredura de buffer grande — sai do cache)
+  2. Memory-bound (varredura de buffer >>> L3 — sai do cache)
   3. I/O-bound (leitura/escrita em disco)
 
 Coleta métricas em cada fase e infere o gargalo dominante da máquina.
 
 Uso: python3 workload_completo.py
+
+Nota: o número de "memory-bound bandwidth" obtido é uma SUBESTIMATIVA da
+banda real de RAM, pois o NumPy usa SIMD e o controlador de memória
+prefetcha agressivamente. Para um número mais fiel, use `mbw -t0 -n 5 1024`.
 """
 
 import os
-import time
 import tempfile
+import time
 
-import psutil
 import numpy as np
+import psutil
 
 
 def fase_cpu_bound(duracao_alvo: float = 8.0) -> dict:
@@ -26,7 +30,6 @@ def fase_cpu_bound(duracao_alvo: float = 8.0) -> dict:
     print("\n[1/3] Fase CPU-BOUND — multiplicação de matrizes pequenas")
     print("       (dados cabem em L2/L3, exercita pipeline e ALU)")
 
-    cpu_inicio = psutil.cpu_percent(interval=None)
     inicio = time.perf_counter()
     iteracoes = 0
 
@@ -50,19 +53,23 @@ def fase_cpu_bound(duracao_alvo: float = 8.0) -> dict:
 
 def fase_memory_bound(duracao_alvo: float = 8.0) -> dict:
     """Varredura de buffer grande — sai do cache, estressa RAM."""
-    print("\n[2/3] Fase MEMORY-BOUND — varredura de buffer 500 MB")
-    print("       (sai do cache, exercita largura de banda de RAM)")
+    print("\n[2/3] Fase MEMORY-BOUND — varredura de buffer 1 GB")
+    print("       (sai de qualquer L3, exercita banda de RAM)")
 
-    tamanho_mb = 500
+    # 1 GB é maior que qualquer L3 atual (max ~128 MB em CPUs server)
+    tamanho_mb = 1024
     n_elementos = (tamanho_mb * 1024 * 1024) // 8
     buffer = np.random.rand(n_elementos)
+
+    # Toca todas as páginas para forçar commit antes de medir
+    buffer[::4096] = 0.0
 
     inicio = time.perf_counter()
     iteracoes = 0
     soma = 0.0
 
     while time.perf_counter() - inicio < duracao_alvo:
-        soma += buffer.sum()
+        soma += float(np.sum(buffer))
         iteracoes += 1
 
     duracao = time.perf_counter() - inicio
@@ -125,33 +132,40 @@ def inferir_gargalo(r_cpu, r_mem, r_io):
     print("INFERÊNCIA DE GARGALO")
     print("=" * 70)
 
-    nucleos = psutil.cpu_count(logical=True)
+    nucleos = psutil.cpu_count(logical=True) or 1
     pontos_cpu = r_cpu["throughput"]
     pontos_mem = r_mem["bandwidth_gbs"]
     pontos_io = r_io["throughput_mbs"]
 
-    print(f"  CPU:    {pontos_cpu:>10.1f} multiplicações/s")
-    print(f"  Memória:{pontos_mem:>10.2f} GB/s de varredura")
-    print(f"  I/O:    {pontos_io:>10.1f} MB/s de escrita")
+    # Quantos núcleos estavam ocupados? Snapshot por núcleo.
+    por_core = psutil.cpu_percent(interval=0.5, percpu=True)
+    cores_usados = sum(1 for c in por_core if c > 50)
+
+    print(f"  CPU:       {pontos_cpu:>10.1f} multiplicações/s")
+    print(f"  Memória:   {pontos_mem:>10.2f} GB/s de varredura "
+          "(subestimativa — ver mbw)")
+    print(f"  I/O:       {pontos_io:>10.1f} MB/s de escrita")
+    print(f"  Cores >50% no fim: {cores_usados}/{nucleos}")
     print()
 
-    # Heurísticas indicativas — ajuste conforme cenário típico
     if pontos_io < 100:
-        print("   Disco lento (HDD?). Aplicações com muito I/O sofrerão.")
+        print("⚠ Disco lento (HDD?). Aplicações com muito I/O sofrerão.")
     elif pontos_io < 500:
-        print("   SSD SATA detectado. NVMe daria ganho considerável.")
+        print("⚠ Provável SSD SATA. Um NVMe daria ganho considerável.")
     else:
-        print("   Armazenamento rápido (provavelmente NVMe).")
+        print("✓ Armazenamento rápido (provavelmente NVMe).")
 
     if pontos_mem < 5:
-        print("   Largura de banda de RAM limitada. RAM dual-channel ajudaria.")
+        print("⚠ Banda de RAM limitada. Verifique se está em dual-channel.")
     else:
-        print("   RAM com largura de banda saudável.")
+        print("✓ RAM com banda saudável.")
 
-    if r_cpu["cpu_pct"] < (90 / nucleos):
-        print("   Workload CPU não saturou os núcleos. Há paralelismo a explorar.")
+    if cores_usados < max(2, nucleos // 2):
+        print(f"⚠ Apenas {cores_usados}/{nucleos} núcleos saturados — este "
+              "workload é single-thread. Há paralelismo a explorar.")
     else:
-        print("   CPU bem utilizada na fase compute-bound.")
+        print(f"✓ {cores_usados}/{nucleos} núcleos exercitados — workload "
+              "bem paralelizado.")
 
     print("=" * 70)
 
@@ -166,6 +180,10 @@ def main():
     print(f"RAM:    {ram_gb:.1f} GB")
     print(f"SO:     {os.name}")
     print("=" * 70)
+
+    if ram_gb < 2.0:
+        print("\n⚠ RAM total < 2 GB. A fase memory-bound pode falhar.")
+        print("  Reduza o tamanho do buffer manualmente em fase_memory_bound.\n")
 
     r_cpu = fase_cpu_bound()
     r_mem = fase_memory_bound()
