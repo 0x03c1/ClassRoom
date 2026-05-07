@@ -2,6 +2,9 @@
  * Exemplo de algoritmo para o comparador_stacks.py
  * Mesma operação que ordenacao.py e ordenacao.c, mas em Java.
  *
+ * Usa pivô por mediana-de-três para reduzir o pior caso do quicksort
+ * em entradas já ordenadas (mantém comparabilidade entre as 3 linguagens).
+ *
  * Compilar:  javac Ordenacao.java
  * Uso:       java Ordenacao <tamanho>
  */
@@ -9,17 +12,25 @@
 import java.util.Random;
 
 public class Ordenacao {
+
     static void quicksort(int[] arr, int lo, int hi) {
         if (lo < hi) {
+            // Pivô = mediana-de-três (lo, mid, hi). Move a mediana para arr[hi].
+            int mid = (lo + hi) >>> 1;
+            if (arr[lo] > arr[mid]) { int t = arr[lo]; arr[lo] = arr[mid]; arr[mid] = t; }
+            if (arr[lo] > arr[hi])  { int t = arr[lo]; arr[lo] = arr[hi];  arr[hi]  = t; }
+            if (arr[mid] > arr[hi]) { int t = arr[mid]; arr[mid] = arr[hi]; arr[hi] = t; }
+            int tmp = arr[mid]; arr[mid] = arr[hi]; arr[hi] = tmp;
+
             int pivot = arr[hi];
             int i = lo - 1;
             for (int j = lo; j < hi; j++) {
                 if (arr[j] <= pivot) {
                     i++;
-                    int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+                    int t = arr[i]; arr[i] = arr[j]; arr[j] = t;
                 }
             }
-            int tmp = arr[i + 1]; arr[i + 1] = arr[hi]; arr[hi] = tmp;
+            int t = arr[i + 1]; arr[i + 1] = arr[hi]; arr[hi] = t;
             int p = i + 1;
             quicksort(arr, lo, p - 1);
             quicksort(arr, p + 1, hi);
