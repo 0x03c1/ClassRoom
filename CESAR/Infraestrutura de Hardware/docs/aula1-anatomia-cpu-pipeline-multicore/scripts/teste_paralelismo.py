@@ -10,9 +10,20 @@ Uso: python3 teste_paralelismo.py
 Dependências: numpy, psutil
 """
 
+# IMPORTANTE: as variáveis abaixo DEVEM ser definidas antes de importar
+# numpy/psutil. As bibliotecas BLAS (OpenBLAS, MKL, BLIS, Accelerate) leem
+# essas variáveis no momento do import e ignoram alterações posteriores.
+# Sem isso, o "single-thread" do teste roda multi-threaded e o speedup fica
+# distorcido.
 import os
-import time
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("BLIS_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")  # macOS
+
 import multiprocessing as mp
+import time
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
@@ -49,16 +60,14 @@ def main():
     print(f"Threads lógicas:  {threads_logicas}")
     print(f"Tarefas:          {N_TAREFAS} multiplicações de matrizes "
           f"{TAMANHO_MATRIZ}x{TAMANHO_MATRIZ}")
+    print("BLAS limitado a 1 thread por processo (env vars setadas no topo)")
     print("=" * 70)
-
-    # Limita NumPy a 1 thread interna para o teste medir o paralelismo do executor
-    os.environ["OMP_NUM_THREADS"] = "1"
-    os.environ["MKL_NUM_THREADS"] = "1"
 
     configuracoes = [1, 2, 4, threads_logicas]
     configuracoes = sorted(set(c for c in configuracoes if c <= threads_logicas))
 
-    print(f"\n{'Threads':<10}{'Tempo (s)':<15}{'Speedup':<12}{'Eficiência (%)':<18}")
+    print(f"\n{'Threads':<10}{'Tempo (s)':<15}{'Speedup':<12}"
+          f"{'Eficiência (%)':<18}")
     print("-" * 55)
 
     tempo_base = None

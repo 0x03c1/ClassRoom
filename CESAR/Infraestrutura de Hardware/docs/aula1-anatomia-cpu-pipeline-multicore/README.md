@@ -56,38 +56,69 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 #### No Linux
 
+> **Importante:** os comandos `lscpu` e `/proc/cpuinfo` são específicos de
+> Linux. Alunos com macOS, vejam a seção macOS abaixo. Alunos com Windows
+> usam CPU-Z e HWiNFO64 (já cobertos).
+
 ```bash
-# Visão geral da CPU
+# Visão geral da CPU (todas as arquiteturas Linux)
 lscpu
 
 # Topologia hierárquica visual (gera PNG)
 lstopo --of png > /tmp/topologia-cpu.png
 xdg-open /tmp/topologia-cpu.png
 
-# Frequência em tempo real de cada core
+# Frequência em tempo real — Linux x86 clássico
 watch -n 1 "grep 'cpu MHz' /proc/cpuinfo"
+
+# Em ARM Linux (Raspberry Pi, Graviton, máquinas Snapdragon)
+# ou se /proc/cpuinfo não tiver 'cpu MHz', use:
+watch -n 1 "cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq 2>/dev/null"
 ```
 
-> No `lscpu`, identifique os campos: `Socket(s)`, `Core(s) per socket`, `Thread(s) per core`, `CPU max MHz`, `Flags` (procure `sse4_2`, `avx`, `avx2`).
+> No `lscpu`, identifique os campos: `Socket(s)`, `Core(s) per socket`,
+> `Thread(s) per core`, `CPU max MHz`, `Flags` (procure `sse4_2`, `avx`,
+> `avx2`). Em ARM, o campo equivalente a `Flags` é `Features` e os nomes
+> mudam (`neon`, `asimd`, `sve`, etc.).
+
+#### No macOS (Apple Silicon ou Intel)
+
+macOS não tem `/proc/cpuinfo`. Use:
+
+```bash
+# Modelo, núcleos e cache
+sysctl -n machdep.cpu.brand_string
+sysctl -n hw.ncpu hw.physicalcpu hw.logicalcpu
+sysctl -a | grep cachesize
+
+# Frequência em tempo real: abra o Activity Monitor e use
+# Window → CPU History, ou instale `mactop` via Homebrew.
+```
 
 ### Atividade 1.2 — Pipeline e Paralelismo na Prática
 
 #### Experimento 1: Cinebench R23 (Windows)
 
+> **Importante sobre versões:** baixe especificamente o **Cinebench R23** em
+> <https://www.maxon.net/en/downloads/cinebench-downloads> (a página oficial
+> ainda lista R23 junto com 2024 e 2026). **Não use 2024 ou 2026** — a
+> Maxon recalibrou a escala de pontos, então scores não são comparáveis
+> entre versões. R23 é o que tem a maior base pública de comparação.
+
 1. Abra o **Cinebench R23**.
-2. Execute primeiro **Single Core** (clique no botão "Start" da linha Single
-   Core). Aguarde ~10 min.
-   _Como o tempo é apertado, configure o teste mínimo em_
-   _"File → Advanced benchmark → Custom Minimum Test Duration: Off"_.
-3. Anote a pontuação **single-core**.
-4. Execute em seguida **Multi Core** com a mesma configuração. Anote a pontuação.
-5. Calcule:
+2. No menu superior: **File → Advanced benchmark**. Marque essa opção.
+3. Em **Minimum Test Duration**, escolha **Off** (caso contrário, o teste
+   roda por 10 min — fora da janela da aula).
+4. Execute primeiro **CPU (Single Core)** clicando em "Start". Anote a
+   pontuação.
+5. Execute em seguida **CPU (Multi Core)**. Anote a pontuação.
+6. Calcule:
 
    ```text
    Fator de escala = Pontuação Multi / Pontuação Single
    ```
 
-6. Compare com o **número de threads lógicas** identificado na atividade 1.1.
+7. Compare com o **número de threads lógicas** identificado na atividade 1.1.
 
 #### Experimento 2: Sysbench (Linux) — alternativa ou complementar
 
