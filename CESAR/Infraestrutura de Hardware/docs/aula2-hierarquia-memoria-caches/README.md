@@ -42,20 +42,40 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 > Alternativa caso AIDA64 não esteja disponível: **SiSoftware Sandra Lite** → Benchmarks → Cache & Memory Bandwidth.
 
-#### No Linux — Sysbench
+#### No Linux — mbw (recomendado)
+
+A ferramenta `mbw` (Memory BandWidth benchmark) aloca dois arrays de tamanho
+configurável e mede o tempo de copiá-los — exatamente o que precisamos para
+observar a hierarquia de cache se manifestando.
 
 ```bash
-# Bloco pequeno (cabe em L1)
-sysbench memory --memory-block-size=1K --memory-total-size=10G run | grep "transferred"
+# Instalar
+sudo apt install -y mbw
 
-# Bloco médio (cabe em L2/L3)
-sysbench memory --memory-block-size=512K --memory-total-size=10G run | grep "transferred"
+# Mede largura de banda em três regimes de tamanho:
 
-# Bloco grande (sai pra RAM)
-sysbench memory --memory-block-size=64M --memory-total-size=10G run | grep "transferred"
+# (1) Cabe em L2/L3 — bandwidth alto (cache hit)
+mbw -t0 -n 5 16        # 16 MiB
+
+# (2) Pressiona L3, começa a sair pra RAM
+mbw -t0 -n 5 128       # 128 MiB
+
+# (3) Sai do cache, mede a RAM real
+mbw -t0 -n 5 1024      # 1 GiB
+
+# -t0 = método MEMCPY (libc), -n = número de repetições
 ```
 
-> Observe como a largura de banda **cai** conforme o bloco cresce — é o efeito da hierarquia de memória se manifestando.
+O que observar: a **vazão (`Copy: ... MiB/s`)** cai conforme o array
+cresce além do tamanho de cada nível de cache. Anote os três valores na
+tabela.
+
+> **Por que não `sysbench memory`?** Apesar de popular, ele aloca um
+> buffer único de tamanho fixo e itera sobre ele — então **sempre** mede
+> cache, não hierarquia. Pior: o overhead de framework distorce os números
+> a ponto de `--memory-block-size=1K` ser MAIS LENTO que `1M`, oposto do
+> esperado pedagogicamente. Para uma versão paralela com SSE/AVX e gráficos
+> automáticos, veja `pmbw` como leitura opcional.
 
 #### No Linux — perf (mais profundo, opcional)
 
@@ -65,7 +85,8 @@ sudo perf stat -e cache-references,cache-misses,L1-dcache-loads,L1-dcache-load-m
   ls -laR /usr/ > /dev/null
 ```
 
-A taxa `cache-misses / cache-references` mostra quanta pressão o programa colocou sobre o cache.
+A taxa `cache-misses / cache-references` mostra quanta pressão o programa
+colocou sobre o cache.
 
 ### Atividade 2.2 — O experimento da localidade
 

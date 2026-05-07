@@ -9,15 +9,15 @@ Demonstra empiricamente o impacto da localidade espacial:
 
 Mesma quantidade de operações, tempos drasticamente diferentes.
 
-Uso: python3 teste_localidade.py
+Uso:
+    python3 teste_localidade.py          # N=2000 (~30s)
+    python3 teste_localidade.py 4000     # N=4000 (~2min, efeito mais dramático)
 """
 
+import sys
 import time
+
 import numpy as np
-
-
-# Matriz grande o suficiente para sair do L3 (~ 256 MB com float64)
-N = 6000
 
 
 def somar_por_linhas(matriz: np.ndarray) -> float:
@@ -45,6 +45,16 @@ def medir(funcao, matriz):
 
 
 def main():
+    # N pode ser passado como argumento. Default conservador para caber
+    # na janela de aula em qualquer máquina.
+    N = 2000
+    if len(sys.argv) > 1:
+        try:
+            N = int(sys.argv[1])
+        except ValueError:
+            print(f"Aviso: argumento '{sys.argv[1]}' inválido, usando N={N}",
+                  file=sys.stderr)
+
     print("=" * 70)
     print("TESTE DE LOCALIDADE DE CACHE — Localidade Espacial na prática")
     print("=" * 70)
@@ -53,9 +63,10 @@ def main():
     print(f"Total de operações por loop: {N*N:,}")
     print("=" * 70)
     print()
-    print(" Para o efeito ser visível, este script usa loops Python puros.")
-    print("  Com NumPy vetorizado, o compilador resolveria isso pra nós.")
-    print("  Reduza N se a sua máquina demorar muito (sugestão: 2000).")
+    print("Para o efeito ser visível, este script usa loops Python puros.")
+    print("Com NumPy vetorizado, o compilador resolveria isso pra nós.")
+    print(f"Aumente N (ex: python3 {sys.argv[0]} 4000) para efeito mais")
+    print("dramático em CPUs rápidas.")
     print()
 
     # Cria a matriz com valores aleatórios
@@ -76,7 +87,7 @@ def main():
     tempo_b = medir(somar_por_colunas, matriz)
     print(f"    Tempo: {tempo_b:.2f}s")
 
-    razao = tempo_b / tempo_a
+    razao = tempo_b / tempo_a if tempo_a > 0 else float("inf")
 
     print()
     print("=" * 70)
@@ -84,7 +95,8 @@ def main():
     print("=" * 70)
     print(f"Loop A (sequencial):   {tempo_a:>8.2f}s")
     print(f"Loop B (com saltos):   {tempo_b:>8.2f}s")
-    print(f"Razão B/A:             {razao:>8.2f}x  ← acesso ruim é {razao:.1f}x mais lento")
+    print(f"Razão B/A:             {razao:>8.2f}x  ← acesso ruim é "
+          f"{razao:.1f}x mais lento")
     print()
     print("INTERPRETAÇÃO:")
     print("  • A matriz é armazenada em memória 'row-major' (linhas contíguas).")
