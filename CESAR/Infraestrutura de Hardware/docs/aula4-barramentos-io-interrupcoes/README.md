@@ -36,18 +36,22 @@ Ao final deste bloco, o aluno deve ser capaz de:
 #### No Linux (monitoramento)
 
 ```bash
-# Listagem geral de dispositivos PCI
+# 1. Listagem geral de dispositivos PCI
 lspci
 
-# Encontre o ID do controlador NVMe
+# 2. Encontre a linha do controlador NVMe e copie a primeira coluna
+#    (formato: 04:00.0 — vai ser diferente em cada máquina)
 lspci | grep -i nvme
+# Saída exemplo:
+#   04:00.0 Non-Volatile memory controller: Samsung Electronics ...
 
-# Detalhes da geração e largura do link (substitua o ID encontrado)
-sudo lspci -vv -s <ID_NVMe> | grep -E "LnkCap|LnkSta"
+# 3. Use esse ID nos comandos abaixo (substitua 04:00.0 pelo seu ID)
+sudo lspci -vv -s 04:00.0 | grep -E "LnkCap|LnkSta"
 
 # Mesma coisa para a GPU
 lspci | grep -i vga
-sudo lspci -vv -s <ID_GPU> | grep -E "LnkCap|LnkSta"
+# (anote o ID, ex: 01:00.0)
+sudo lspci -vv -s 01:00.0 | grep -E "LnkCap|LnkSta"
 ```
 
 > **Como ler:**
@@ -92,8 +96,9 @@ ping -c 100 8.8.8.8
 
 # 2. Mexa o mouse — observe a IRQ do USB
 # 3. Digite no teclado — observe a IRQ correspondente
-# 4. Copie um arquivo grande — observe a IRQ do controlador de armazenamento
-dd if=/dev/zero of=/tmp/teste.bin bs=1M count=500
+# 4. Copie um arquivo grande COM I/O direto — observe a IRQ do controlador
+#    (sem oflag=direct, o SO usa cache de página e a IRQ mal sobe)
+dd if=/dev/zero of=/tmp/teste.bin bs=1M count=2000 oflag=direct conv=fdatasync
 rm /tmp/teste.bin
 ```
 
