@@ -45,19 +45,34 @@ Ao final deste bloco, o aluno deve ser capaz de:
 #### No Linux — fio
 
 ```bash
-# Leitura sequencial
-fio --name=seqread --rw=read --bs=1M --size=1G --numjobs=1 \
-    --runtime=30 --filename=/tmp/fio-test --direct=1 --group_reporting
+# 1. Cria arquivo de teste (necessário antes do read)
+fio --name=prep --rw=write --bs=1M --size=1G --filename=/tmp/fio-test \
+    --direct=1 --ioengine=libaio --iodepth=32 --group_reporting
 
-# Leitura aleatória 4K
-fio --name=randread --rw=randread --bs=4k --size=1G --numjobs=1 \
-    --runtime=30 --filename=/tmp/fio-test --direct=1 --group_reporting
+# 2. Leitura sequencial — mede throughput máximo
+fio --name=seqread --rw=read --bs=1M --filename=/tmp/fio-test \
+    --direct=1 --ioengine=libaio --iodepth=32 \
+    --runtime=30 --time_based --group_reporting
+
+# 3. Leitura aleatória 4K — mede IOPS
+fio --name=randread --rw=randread --bs=4k --filename=/tmp/fio-test \
+    --direct=1 --ioengine=libaio --iodepth=64 \
+    --runtime=30 --time_based --group_reporting
 
 # Limpeza
 rm /tmp/fio-test
 ```
 
-> **Cuidado:** o `fio` com `--direct=1` ignora o cache do SO. Sem essa flag, vocês mediriam o cache de página, não o disco real.
+> **Por que essas flags importam:**
+>
+> - `--direct=1` ignora o cache de página do SO. Sem isso, vocês mediriam
+>   o cache, não o disco real.
+> - `--time_based` faz o teste rodar pelo `--runtime` inteiro. Sem isso,
+>   em SSDs NVMe rápidos o `--size=1G` se esgota em < 1s e o resultado fica
+>   ruidoso.
+> - `--ioengine=libaio --iodepth=32` (ou 64) satura a fila do disco. Sem
+>   isso, o default síncrono mede só ~10% da capacidade real do NVMe.
+> - **macOS:** trocar `libaio` por `posixaio`. **Windows:** `windowsaio`.
 
 ### Atividade 3.2 — Comparação visual com a RAM
 
@@ -102,11 +117,17 @@ cat /proc/meminfo | head -10
 vmstat 1 5
 
 # Mapa de memória virtual de um processo
-PID=$(pgrep -f firefox | head -1)
-cat /proc/$PID/status | grep -E "VmSize|VmRSS|VmSwap|VmPeak"
+# Substitua o regex pelos navegadores que vocês usam:
+PID=$(pgrep -f "firefox|chrome|chromium|brave|msedge" | head -1)
+if [[ -z "$PID" ]]; then
+    echo "Abra um navegador antes, ou escolha outro PID:"
+    ps -eo pid,rss,cmd --sort=-rss | head
+else
+    cat /proc/$PID/status | grep -E "VmSize|VmRSS|VmSwap|VmPeak"
 
-# Mapa detalhado das regiões
-sudo cat /proc/$PID/maps | head -20
+    # Mapa detalhado das regiões (precisa sudo se o processo não é seu)
+    sudo cat /proc/$PID/maps | head -20
+fi
 ```
 
 ### Atividade 3.4 — Pressão de memória controlada
@@ -115,12 +136,21 @@ sudo cat /proc/$PID/maps | head -20
 
 #### Linux — stress-ng
 
+> ⚠️ **Antes de rodar:** salve qualquer trabalho aberto. Se a máquina não
+> tem swap, esse comando pode disparar o OOM-killer e fechar processos do
+> sistema. Em máquinas com 4 GB ou menos, troque `80%` por `50%`.
+
 ```bash
 # Em um terminal, monitore:
 watch -n 1 "free -h; echo; vmstat 1 1"
 
-# Em outro terminal, gere pressão (consome 80% da RAM por 30s)
-stress-ng --vm 2 --vm-bytes 80% --timeout 30s
+# Em outro terminal, gere pressão (consome ~80% da RAM total)
+# IMPORTANTE: --vm-bytes é POR worker. Com --vm 1, o total é 80%.
+# Se você rodar --vm 2 --vm-bytes 80%, vai pedir 160% da RAM e crashar.
+stress-ng --vm 1 --vm-bytes 80% --timeout 30s
+
+# Variante: dois workers concorrentes, somando 80%:
+# stress-ng --vm 2 --vm-bytes 40% --timeout 30s
 ```
 
 Observe durante o teste:
