@@ -17,7 +17,7 @@
 
 - [Voltar ao índice do laboratório](../../README.md)
 - [Referência de leitura do htop/top](../referencia-htop-top/README.md)
-- [Modelo de relatório](../../relatorio-template/relatorio.md)
+- [Modelo de relatório](../relatorio-template/relatorio.md)
 
 ---
 
