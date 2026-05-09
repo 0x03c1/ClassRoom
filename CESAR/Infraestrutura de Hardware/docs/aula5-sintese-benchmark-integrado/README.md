@@ -16,7 +16,7 @@ gargalo dominante está em CPU, cache, memória, armazenamento ou barramento.
 
 ## Descrição
 
-Aqui você fecha o ciclo da disciplina. A dupla executa um **workload
+Aqui você fecha o ciclo da disciplina. Você executa um **workload
 realista**, coleta métricas dos subsistemas estudados (CPU, cache, memória e
 I/O) e revisita as hipóteses iniciais com base em dados medidos.
 
@@ -35,15 +35,15 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 ### Atividade 5.1 — Escolha o seu workload
 
-Cada dupla escolhe **um** workload entre as opções:
+Você escolhe **um** workload entre as opções:
 
-| Opção | Workload                                                                         | O que estressa        |
-| ----- | -------------------------------------------------------------------------------- | --------------------- |
-| A     | Compilar um projeto C médio (clone do `linux/tools/perf` ou similar)             | CPU + I/O + memória   |
+| Opção | Workload                                                                                                                                          | O que estressa        |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| A     | Compilar um projeto C médio (clone do `linux/tools/perf` ou similar)                                                                              | CPU + I/O + memória   |
 | B     | `7z b` (benchmark interno do 7-Zip) — instale com `sudo apt install p7zip-full` no Linux, ou adicione `C:\Program Files\7-Zip` ao PATH no Windows | CPU + cache           |
-| C     | Multiplicação de matrizes em Python/NumPy 5000x5000                              | CPU + memória + cache |
-| D     | `ffmpeg` convertendo um vídeo de 1 min para outro codec                          | CPU intensivo + I/O   |
-| E     | Workload do script `scripts/workload_completo.py` (recomendado se houver dúvida) | Tudo, controlado      |
+| C     | Multiplicação de matrizes em Python/NumPy 5000x5000                                                                                               | CPU + memória + cache |
+| D     | `ffmpeg` convertendo um vídeo de 1 min para outro codec                                                                                           | CPU intensivo + I/O   |
+| E     | Workload do script `scripts/workload_completo.py` (recomendado se houver dúvida)                                                                  | Tudo, controlado      |
 
 > Recomendação: se houver dúvida na escolha, use o **script `workload_completo.py`**, pois ele exercita CPU, cache e memória de forma controlada e gera resultados comparáveis entre máquinas.
 

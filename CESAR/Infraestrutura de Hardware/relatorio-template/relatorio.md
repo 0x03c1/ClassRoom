@@ -9,7 +9,7 @@
 
 ## Identificação
 
-- **Dupla / trio:** ___________________________________________________
+- **Aluno(a):** _______________________________________________________
 - **Máquina(s) usadas:** ______________________________________________
 - **Sistema operacional:** ____________________________________________
 - **Data:** ___ / ___ / 20___
@@ -32,19 +32,19 @@
 
 ## Bloco 1 — Anatomia da CPU (Aula 1)
 
-| Métrica                                  | Valor   |
-| ---------------------------------------- | ------- |
-| Modelo da CPU                            |         |
-| Arquitetura (x86_64 / aarch64 / ...)     |         |
-| Núcleos físicos                          |         |
-| Threads lógicas (SMT/HT)                 |         |
-| Frequência base / boost                  |         |
-| L1d / L1i / L2 / L3                      |         |
-| Conjunto SIMD mais recente               |         |
-| Cinebench R23 — single                   |         |
-| Cinebench R23 — multi                    |         |
-| Fator de escala (multi/single)           |         |
-| Speedup observado em `teste_paralelismo` |         |
+| Métrica                                  | Valor |
+| ---------------------------------------- | ----- |
+| Modelo da CPU                            |       |
+| Arquitetura (x86_64 / aarch64 / ...)     |       |
+| Núcleos físicos                          |       |
+| Threads lógicas (SMT/HT)                 |       |
+| Frequência base / boost                  |       |
+| L1d / L1i / L2 / L3                      |       |
+| Conjunto SIMD mais recente               |       |
+| Cinebench R23 — single                   |       |
+| Cinebench R23 — multi                    |       |
+| Fator de escala (multi/single)           |       |
+| Speedup observado em `teste_paralelismo` |       |
 
 **Observações / surpresas:**
 
@@ -62,11 +62,11 @@
 | 128 MiB          |                   |
 | 1024 MiB         |                   |
 
-| `teste_localidade.py` | Tempo (s)  |
-| --------------------- | ---------- |
-| Loop A (linhas)       |            |
-| Loop B (colunas)      |            |
-| Razão B/A             |            |
+| `teste_localidade.py` | Tempo (s) |
+| --------------------- | --------- |
+| Loop A (linhas)       |           |
+| Loop B (colunas)      |           |
+| Razão B/A             |           |
 
 **Observações:**
 
@@ -78,13 +78,13 @@
 
 ## Bloco 3 — RAM e Memória Virtual (Aula 3)
 
-| Métrica                          | Valor |
-| -------------------------------- | ----- |
-| RAM total                        |       |
-| RAM disponível em repouso        |       |
-| Swap total / em uso              |       |
-| `fio` seq read (MB/s)            |       |
-| `fio` random read 4k (IOPS)      |       |
+| Métrica                                 | Valor |
+| --------------------------------------- | ----- |
+| RAM total                               |       |
+| RAM disponível em repouso               |       |
+| Swap total / em uso                     |       |
+| `fio` seq read (MB/s)                   |       |
+| `fio` random read 4k (IOPS)             |       |
 | Variação de `si`/`so` durante stress-ng |       |
 
 **Anote o nome do navegador escolhido para `/proc/$PID/status`:** _____________
@@ -99,11 +99,11 @@
 
 ## Bloco 4 — Barramentos, I/O e Interrupções (Aula 4)
 
-| Dispositivo PCIe       | LnkCap (geração × largura) | LnkSta |
-| ---------------------- | -------------------------- | ------ |
-| Controlador NVMe       |                            |        |
-| GPU                    |                            |        |
-| Outro (ex: rede 10G)   |                            |        |
+| Dispositivo PCIe     | LnkCap (geração × largura) | LnkSta |
+| -------------------- | -------------------------- | ------ |
+| Controlador NVMe     |                            |        |
+| GPU                  |                            |        |
+| Outro (ex: rede 10G) |                            |        |
 
 **Top 3 IRQs durante o `dd`:**
 
@@ -115,12 +115,12 @@
 
 ## Bloco 5 — Síntese e Benchmark Integrado (Aula 5)
 
-| Workload (`workload_completo.py`)        | Resultado |
-| ---------------------------------------- | --------- |
-| CPU-bound — multiplicações/s             |           |
-| Memory-bound — bandwidth (GB/s)          |           |
-| I/O-bound — throughput (MB/s)            |           |
-| Cores >50% no fim                        |           |
+| Workload (`workload_completo.py`) | Resultado |
+| --------------------------------- | --------- |
+| CPU-bound — multiplicações/s      |           |
+| Memory-bound — bandwidth (GB/s)   |           |
+| I/O-bound — throughput (MB/s)     |           |
+| Cores >50% no fim                 |           |
 
 **Gargalo dominante (segundo o script):** _________________________________
 

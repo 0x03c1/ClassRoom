@@ -106,7 +106,7 @@ pip3 install psutil numpy
 
 ## Dinâmica da Prática
 
-Trabalhe em **dupla** e mantenha um **caderno de laboratório digital** (use o `relatorio-template/relatorio.md`) para registrar:
+Trabalhe **individualmente** e mantenha um **caderno de laboratório digital** (use o `relatorio-template/relatorio.md`) para registrar:
 
 - Capturas de tela das ferramentas
 - Tabelas de medições

@@ -13,7 +13,7 @@ Este bloco conecta pipeline, ISA e paralelismo com medições reais. Ao comparar
 
 ## Descrição
 
-Neste bloco, você e sua dupla investigam a pergunta-âncora:
+Neste bloco, você investiga a pergunta-âncora:
 _"Por que dois computadores aparentemente similares têm desempenhos tão
  diferentes?"_. A prática começa com inspeção da CPU (Windows e Linux),
 segue com medições de paralelismo (single-core e multi-core) e fecha com a
@@ -31,7 +31,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 ## Contexto inicial
 
 1. Observe os dois cenários de máquinas apresentados na abertura: mesma frequência nominal, mesma RAM, mas tempos de compilação diferentes.
-2. Registre com sua dupla as hipóteses para explicar a diferença.
+2. Registre suas hipóteses para explicar a diferença.
 3. Anote no relatório as 5 métricas que você usaria para comparar máquinas neste momento.
 4. Guarde essas hipóteses para revisar no Bloco 5 (confirmada, refutada ou parcial).
 
@@ -52,7 +52,7 @@ Ao final deste bloco, o aluno deve ser capaz de:
 
 2. **Abra o HWiNFO64** em modo "Sensors only". Observe a frequência **em tempo real** de cada core. Note como ela varia com a carga (Turbo Boost, SpeedStep).
 
-3. Tirem um screenshot e colem no relatório.
+3. Tire um screenshot e cole no relatório.
 
 #### No Linux
 
@@ -167,7 +167,7 @@ Registre as respostas **no relatório** ao final do bloco:
 3. Se o pipeline tem **N estágios** ideais, qual é o ganho teórico máximo em throughput? Quais eventos quebram esse ideal? _(Esperado: hazards de dados, branch misprediction, cache misses.)_
 4. CPU-Z mostra a frequência em GHz. O Cinebench mostra "pts". Como você traduziria uma na outra usando o conceito de **CPI (Cycles Per Instruction)**?
 
-> Discussão opcional com a dupla: _"Se Intel e AMD fabricam CPUs com mesma frequência, por que os benchmarks divergem? Onde está essa diferença, além do clock?"_
+> Discussão opcional individual: _"Se Intel e AMD fabricam CPUs com mesma frequência, por que os benchmarks divergem? Onde está essa diferença, além do clock?"_
 
 ---
 
@@ -205,7 +205,7 @@ Registre as respostas **no relatório** ao final do bloco:
 
 ## Conexão com o próximo bloco
 
-> Você mediu que o paralelismo não escala 1:1. No próximo bloco, a dupla vai medir os tempos de acesso em cada nível da hierarquia de memória e relacionar isso à escalabilidade.
+> Você mediu que o paralelismo não escala 1:1. No próximo bloco, você vai medir os tempos de acesso em cada nível da hierarquia de memória e relacionar isso à escalabilidade.
 
 ## Scripts deste bloco
 

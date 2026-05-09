@@ -115,7 +115,7 @@ rm /tmp/teste.bin
 
 ### Atividade 4.3 — Comparação RAM vs PCIe (opcional, mas instigante)
 
-Calcule com sua dupla:
+Calcule:
 
 ```text
 RAM DDR4-3200 dual-channel = 2 * 25.6 GB/s = 51.2 GB/s

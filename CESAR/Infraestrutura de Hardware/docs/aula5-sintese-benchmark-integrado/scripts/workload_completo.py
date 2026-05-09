@@ -198,7 +198,7 @@ def main():
     inferir_gargalo(r_cpu, r_mem, r_io)
 
     print("\nPRÓXIMOS PASSOS:")
-    print("  1. Compare seus números com os do colega ao lado.")
+    print("  1. Compare seus números com uma execução anterior sua.")
     print("  2. Identifique a maior diferença e proponha uma explicação.")
     print("  3. Refine sua resposta às perguntas reflexivas do bloco 5.\n")
 

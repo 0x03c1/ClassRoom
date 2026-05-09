@@ -299,7 +299,7 @@ Tamanho   Python       C            Java         C/Python   Java/Python
 
 ### Comparação entre máquinas
 
-Cada dupla pode rodar o mesmo `comparador_stacks.py` na máquina do laboratório
+Você pode rodar o mesmo `comparador_stacks.py` na máquina do laboratório
 e na máquina pessoal. Isso produz uma base comparável entre hardware,
 linguagem e tamanho de entrada.
 
