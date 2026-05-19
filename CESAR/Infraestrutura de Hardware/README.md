@@ -57,6 +57,7 @@ relatorio-template/
 | 4     | [Barramentos, I/O e Interrupções](./docs/aula4-barramentos-io-interrupcoes/README.md)            | 00 min  |
 | 5     | [Síntese e Benchmark Integrado](./docs/aula5-sintese-benchmark-integrado/README.md)              | 00 min  |
 | Apoio | [Análise de Performance de Algoritmos](./docs/analise-performance-algoritmos/README.md)          | Extra   |
+| Apoio | [Análise de Performance de Algoritmos](./docs/analise-performance-algoritmos/README2.md)          | Extra   |
 | -     | [Modelo de Relatório](./relatorio-template/relatorio.md)                                         | -       |
 
 > **Materiais de consulta:**
