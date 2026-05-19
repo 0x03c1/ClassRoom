@@ -63,7 +63,7 @@ sudo apt install -y build-essential graphviz python3 python3-pip
 ### Pacotes Python
 
 ```bash
-pip install --user gprof2dot snakeviz py-spy
+pip install gprof2dot snakeviz py-spy
 ```
 
 > Se o sistema bloquear a instalação global (PEP 668), use `--break-system-packages` ou um `venv`.
