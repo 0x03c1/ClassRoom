@@ -1,5 +1,9 @@
 # Laboratório Prático — Criando uma Máquina Virtual no Azure e Hospedando um Servidor Web
 
+> Passos e comandos revisados em set/2026 com a documentação oficial:
+> [Quickstart: criar VM Linux no portal](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
+> e [via Azure CLI](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli).
+
 ---
 
 ## Objetivos de Aprendizagem
@@ -29,16 +33,21 @@ Ao final deste laboratório, você será capaz de:
 
 ## Visão Geral da Arquitetura
 
-```
-┌──────────────┐         SSH (22)          ┌──────────────────────┐
-│  Seu PC      │ ───────────────────────── │   VM Linux Azure     │
-│  (terminal)  │                           │   Ubuntu 22.04 LTS   │
-└──────────────┘         HTTP (8000)       │                      │
-       │                                   │   Python HTTP Server │
-       └────────────────────────────────── │   :8000              │
-                                           └──────────────────────┘
-                                                      │
-                                                IP Público
+```mermaid
+flowchart LR
+    subgraph Clientes
+        T["Seu PC<br/>(terminal SSH)"]
+        N["Navegador<br/>(qualquer cliente)"]
+    end
+
+    T -->|"SSH · porta 22"| NSG
+    N -->|"HTTP · porta 8000"| NSG
+
+    subgraph Azure["Azure — Grupo de Recursos"]
+        IP["IP Público"] --> NSG["Network Security Group<br/>(regras de entrada: 22 e 8000)"]
+        NSG --> VM["VM Linux · Ubuntu LTS<br/>Standard_B1s"]
+        VM --> PS["python3 -m http.server 8000<br/>serve ~/site/index.html"]
+    end
 ```
 
 ---
@@ -100,8 +109,8 @@ Preencha conforme a tabela abaixo:
 | **Nome da máquina virtual**   | `vm-webserver-01`                                          |
 | **Região**                    | a mesma do grupo de recursos                               |
 | **Opções de disponibilidade** | `Nenhuma redundância de infraestrutura necessária`         |
-| **Tipo de segurança**         | `Standard`                                                 |
-| **Imagem**                    | `Ubuntu Server 22.04 LTS - x64 Gen2`                       |
+| **Tipo de segurança**         | `Inicialização Confiável` (Trusted Launch — padrão atual; pode manter) |
+| **Imagem**                    | `Ubuntu Server 24.04 LTS - x64 Gen2` (ou `22.04 LTS` se preferir) |
 | **Arquitetura da VM**         | `x64`                                                      |
 | **Tamanho**                   | `Standard_B1s` (1 vCPU, 1 GiB RAM — elegível ao Free Tier) |
 
@@ -180,7 +189,7 @@ O Python HTTP Server escuta na porta `8000`. Precisamos liberá-la no NSG (Netwo
 
 3. Clique em **Adicionar**.
 
-> **Por que prioridade 310?** Regras com número menor têm precedência. As regras automáticas do Azure começam em 300 (SSH = 300), então usamos 310 para a próxima.
+> **Por que prioridade 310?** Regras com número menor têm precedência. A regra de SSH criada junto com a VM costuma ficar em 300 (às vezes 1000); qualquer valor livre entre 100 e 4096 serve — 310 mantém a lista organizada. Se o portal reclamar de prioridade em uso, escolha outro número.
 
 ---
 
@@ -234,15 +243,16 @@ sudo apt update && sudo apt upgrade -y
 
 ### Passo 5.2 — Verificar o Python
 
-O Ubuntu 22.04 já vem com Python 3.10:
+O Ubuntu já vem com Python 3 pré-instalado:
 
 ```bash
 python3 --version
 ```
 
-Saída esperada:
+Saída esperada (a versão varia conforme a imagem):
 ```
-Python 3.10.12
+Python 3.12.x   # Ubuntu 24.04
+Python 3.10.x   # Ubuntu 22.04
 ```
 
 ### Passo 5.3 — Criar uma página HTML de demonstração
@@ -358,9 +368,17 @@ Para fixar o aprendizado, tente:
 4. **Criar a mesma VM via Azure CLI** para comparar a velocidade:
    ```bash
    az vm create --resource-group rg-lab-webserver \
-     --name vm-cli-01 --image Ubuntu2204 \
-     --admin-username azureuser --generate-ssh-keys
+     --name vm-cli-01 --image Ubuntu2404 \
+     --size Standard_B1s \
+     --admin-username azureuser --generate-ssh-keys \
+     --public-ip-sku Standard
+
+   # abrir a porta 8000 no NSG criado pela CLI
+   az vm open-port --resource-group rg-lab-webserver \
+     --name vm-cli-01 --port 8000 --priority 310
    ```
+
+   > O SKU `Básico` de IP público foi aposentado em set/2025 — por isso `--public-ip-sku Standard` (hoje já é o padrão da CLI, mas deixe explícito). Os aliases `Ubuntu2404` e `Ubuntu2204` continuam válidos.
 
 ---
 
