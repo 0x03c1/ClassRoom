@@ -2,6 +2,10 @@
 
 **Guia Prático para Estudantes — Deploy de API REST em nuvem**
 
+> Comandos e caminhos do portal revisados em set/2026 com a documentação oficial:
+> [Quickstart: Deploy a Python web app](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python)
+> e [Configure a Linux Python app](https://learn.microsoft.com/en-us/azure/app-service/configure-language-python).
+
 ---
 
 ## Sumário
@@ -33,17 +37,46 @@ A API que vamos construir gerencia uma lista de tarefas (ToDo). Ela serve de bas
 - Configurar o servidor Gunicorn + Uvicorn para rodar FastAPI
 - Testar endpoints REST com Swagger UI e `curl`
 
+### Arquitetura da solução
+
+```mermaid
+flowchart LR
+    subgraph Clientes
+        B["Browser<br/>(Swagger UI /docs)"]
+        M["App Mobile"]
+        P["Parceiro / outro serviço"]
+    end
+
+    B -->|HTTPS| LB
+    M -->|HTTPS| LB
+    P -->|HTTPS| LB
+
+    subgraph Azure["Azure App Service — plano F1 (Linux)"]
+        LB["Load balancer<br/>(termina o TLS)"] --> NG["Nginx<br/>(proxy reverso)"]
+        NG --> GU["Gunicorn<br/>(gerente de processos, :8000)"]
+        GU --> W1["Uvicorn worker"]
+        GU --> W2["Uvicorn worker"]
+        W1 --> API["FastAPI<br/>main:app"]
+        W2 --> API
+        API --> ST["store<br/>(lista em memória)"]
+    end
+```
+
+O cliente nunca fala direto com o Python: o Azure coloca **Load balancer → Nginx → Gunicorn** na frente. O Gunicorn mantém vários **workers Uvicorn**, e cada um executa a mesma aplicação FastAPI. Os dados ficam em memória (`store`) — some a cada reinício do container.
+
 ### Tecnologias utilizadas
 
 | Componente | Tecnologia | Motivo da escolha |
 |---|---|---|
-| Linguagem | Python 3.11 | Amplamente adotado para APIs e análise de dados |
+| Linguagem | Python 3.13 | Versão estável e disponível no App Service em 2026 |
 | Framework | FastAPI | Moderno, rápido e gera documentação automaticamente |
 | Servidor ASGI | Uvicorn via Gunicorn | Padrão de produção para apps Python assíncronos |
 | Hospedagem | Azure App Service F1 (gratuito) | Suficiente para estudo e prototipagem |
-| Sistema operacional | Linux | Ambiente padrão de servidores em nuvem |
+| Sistema operacional | Linux | Única opção para Python no App Service (Windows foi descontinuado) |
 
-> ⚠️ **Limitação do plano gratuito (F1):** O plano F1 tem limite de 60 minutos de CPU por dia e não suporta domínios personalizados. Para projetos em produção, use o plano B1 ou superior.
+> ⚠️ **Limitação do plano gratuito (F1):** o plano F1 tem limite de 60 minutos de CPU por dia, **não** tem *Always On* (o app "dorme" após ~20 min ocioso e faz *cold start* na requisição seguinte) e não suporta domínios personalizados. Para produção, use o plano B1 ou superior.
+
+> 💡 **Python 3.14+:** a partir do Python 3.14, o App Service **detecta e executa apps FastAPI automaticamente**, sem comando de inicialização. Este guia usa 3.13 + `startup.sh` porque também instalamos as dependências nesse script (ver seção 5.4).
 
 ---
 
@@ -120,7 +153,7 @@ O Web App é o serviço que efetivamente executa o seu código. Ele usa o plano 
    | Grupo de recursos | `rg-fastapi-demo` |
    | Nome | `fastapi-demo-SEUNOME` (deve ser único no Azure) |
    | Publicar | Código |
-   | Pilha de runtime | Python 3.11 |
+   | Pilha de runtime | Python 3.13 (ou a versão mais recente disponível) |
    | Sistema Operacional | Linux |
    | Região | Central US |
    | Plano do Serviço de Aplicativo | `plan-fastapi-free (F1)` |
@@ -163,6 +196,7 @@ Este arquivo lista as bibliotecas que a aplicação precisa. O comando `cat` com
 cat > /home/minha-api/requirements.txt << 'EOF'
 fastapi
 uvicorn[standard]
+uvicorn-worker
 gunicorn
 EOF
 ```
@@ -171,6 +205,7 @@ Entendendo cada dependência:
 
 - **`fastapi`** — o framework que permite definir rotas HTTP com Python puro.
 - **`uvicorn[standard]`** — servidor ASGI que executa a aplicação de forma assíncrona.
+- **`uvicorn-worker`** — classe de *worker* que integra o Uvicorn ao Gunicorn. Desde o Uvicorn 0.30 ela vive nesse pacote separado (o antigo `uvicorn.workers.UvicornWorker` está descontinuado).
 - **`gunicorn`** — gerenciador de processos que cria múltiplos workers do Uvicorn, aumentando a capacidade de atender requisições simultâneas.
 
 ### 5.3 Criando o `main.py`
@@ -284,13 +319,15 @@ pip install -r /home/minha-api/requirements.txt --quiet
 
 echo "[startup] Iniciando Gunicorn..."
 cd /home/minha-api
-exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
+exec gunicorn -w 2 -k uvicorn_worker.UvicornWorker main:app --bind 0.0.0.0:8000
 EOF
 
 chmod +x /home/minha-api/startup.sh
 ```
 
 > 💡 **Por que instalar as dependências no `startup.sh`?** O Azure recria o container do zero a cada reinicialização. Pacotes instalados manualmente com `pip` (fora de `/home`) são perdidos. Como `/home` persiste, colocamos o `requirements.txt` lá e sempre reinstalamos na inicialização.
+
+> 💡 **Por que `-w 2` e não `-w 4`?** O plano F1 tem apenas 1 vCPU compartilhado e ~1 GB de RAM. Dois *workers* são suficientes para a prática; mais que isso arrisca falta de memória. A regra geral do Gunicorn é `(2 × núcleos) + 1` — ajuste conforme o plano.
 
 > ⚠️ **O `chmod +x` é obrigatório.** Sem essa permissão de execução, o Azure não consegue rodar o script e a aplicação não sobe.
 
@@ -325,7 +362,7 @@ Agora precisamos dizer ao Azure qual script executar quando o container iniciar.
    ```
 
 4. Clique em **Salvar** e depois em **Continuar** para confirmar.
-5. O aplicativo reinicia automaticamente. Aguarde 30 a 60 segundos.
+5. O aplicativo reinicia automaticamente. A **primeira** inicialização demora mais (1 a 3 min), porque o `startup.sh` baixa e instala as dependências. Acompanhe pelo **Fluxo de log** (seção 7.5).
 
 > ⚠️ **Atenção ao caminho.** O caminho `/home/minha-api/startup.sh` deve ser exato, incluindo a barra inicial. Um erro tipográfico aqui faz o Azure exibir a página padrão em vez da sua API.
 
@@ -362,23 +399,21 @@ Você pode testar pelo terminal SSH ou por qualquer terminal com acesso à inter
 **Listar todas as tarefas:**
 
 ```bash
-GET https://fastapi-demo-SEUNOME.azurewebsites.net/tasks
+curl https://fastapi-demo-SEUNOME.azurewebsites.net/tasks
 ```
 
 **Buscar uma tarefa pelo ID:**
 
 ```bash
-GET https://fastapi-demo-SEUNOME.azurewebsites.net/tasks/1
+curl https://fastapi-demo-SEUNOME.azurewebsites.net/tasks/1
 ```
 
-**Criar uma nova tarefa:**
+**Criar uma nova tarefa** (`POST` com corpo JSON):
 
 ```bash
-{
-    "title": "Minha nova tarefa",
-    "description": "Descrição opcional",
-    "completed": false
-}
+curl -X POST https://fastapi-demo-SEUNOME.azurewebsites.net/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Minha nova tarefa", "description": "Descrição opcional", "completed": false}'
 ```
 
 ### 7.5 Monitorando os Logs
@@ -447,11 +482,27 @@ No portal, acesse **Fluxo de log** para acompanhar a saída do Gunicorn em tempo
 
 ## 9. Resolução de Problemas
 
-### `ModuleNotFoundError: No module named 'uvicorn'`
+### `ModuleNotFoundError: No module named 'uvicorn'` (ou `uvicorn_worker`)
 
 **Causa:** o container reiniciou e os pacotes instalados manualmente (fora de `/home`) foram perdidos.
 
-**Solução:** verifique se o `startup.sh` realmente executa o `pip install` antes do Gunicorn (seção 5.4) e se o comando de inicialização está configurado corretamente (seção 6).
+**Solução:** verifique se o `startup.sh` realmente executa o `pip install` antes do Gunicorn (seção 5.4) e se o comando de inicialização está configurado corretamente (seção 6). Confirme também que o `requirements.txt` contém `uvicorn-worker`.
+
+---
+
+### `class uri 'uvicorn.workers.UvicornWorker' invalid or not found`
+
+**Causa:** o Uvicorn 0.30+ descontinuou o módulo `uvicorn.workers` (removido em versões seguintes).
+
+**Solução:** use `uvicorn_worker.UvicornWorker` no `startup.sh` (com *underscore*) e mantenha `uvicorn-worker` no `requirements.txt`.
+
+---
+
+### A primeira requisição após um tempo ocioso falha ou demora muito
+
+**Causa:** o plano F1 não tem *Always On*. Após ~20 min sem tráfego o app é desligado; a requisição seguinte dispara um *cold start* que reexecuta o `startup.sh` (incluindo o `pip install`).
+
+**Solução:** aguarde 1 a 3 min e tente de novo. Para eliminar o problema, use plano B1+ e ative **Always On** em **Configurações gerais**.
 
 ---
 
