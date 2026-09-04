@@ -2,6 +2,11 @@
 
 Configuração de uma instância do Azure API Management (APIM) conectada à API FastAPI implantada no App Service. O objetivo é expor a API por meio de um gateway centralizado, aplicando políticas de segurança, controle de acesso e documentação unificada.
 
+> Comandos, políticas e caminhos do portal revisados em set/2026 com a documentação oficial:
+> [API Management — conceitos](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts),
+> [política `rate-limit`](https://learn.microsoft.com/en-us/azure/api-management/rate-limit-policy) e
+> [tiers v2](https://learn.microsoft.com/en-us/azure/api-management/v2-service-tiers-overview).
+
 ---
 
 ## Índice
@@ -14,7 +19,7 @@ Configuração de uma instância do Azure API Management (APIM) conectada à API
 - [Parte 3 — Configurar operações](#parte-3--configurar-operações)
 - [Parte 4 — Aplicar políticas](#parte-4--aplicar-políticas)
 - [Parte 5 — Criar produtos e assinaturas](#parte-5--criar-produtos-e-assinaturas)
-- [Parte 6 — Testar pelo portal do desenvolvedor](#parte-6--testar-pelo-portal-do-desenvolvedor)
+- [Parte 6 — Testar a API](#parte-6--testar-a-api)
 - [Parte 7 — Monitoramento](#parte-7--monitoramento)
 - [Referência de conceitos](#referência-de-conceitos)
 - [Solução de problemas](#solução-de-problemas)
@@ -30,23 +35,20 @@ O Azure API Management é um serviço de gateway para APIs. Ele fica posicionado
 
 Em arquiteturas sem gateway, cada API precisa implementar individualmente autenticação, limitação de requisições, logs, versionamento e CORS. Isso gera duplicação de código e dificulta a governança. Com o APIM, essas responsabilidades são delegadas ao gateway.
 
-```
-Cliente (browser, mobile, parceiro)
-        |
-        v
-+-------------------------+
-|  Azure API Management   |  <-- autenticação, rate limit, logs, CORS, transformação
-+-------------------------+
-        |
-        v
-+-------------------------+
-|  Azure App Service      |  <-- apenas a lógica de negócio (FastAPI)
-+-------------------------+
-        |
-        v
-+-------------------------+
-|  Banco de dados         |  <-- persistência (futuro)
-+-------------------------+
+```mermaid
+flowchart TD
+    subgraph Consumidores
+        BR["Browser"]
+        MB["Mobile"]
+        PA["Parceiro / serviço"]
+    end
+
+    BR --> APIM["Azure API Management<br/>autenticação · rate limit · logs · CORS · transformação"]
+    MB --> APIM
+    PA --> APIM
+
+    APIM --> APP["Azure App Service<br/>apenas a lógica de negócio (FastAPI)"]
+    APP --> DB["Banco de dados<br/>persistência (futuro)"]
 ```
 
 ### Componentes principais do APIM
@@ -64,33 +66,27 @@ Cliente (browser, mobile, parceiro)
 
 ## Arquitetura da solução
 
-Ao final deste guia, a arquitetura será a seguinte:
+Ao final deste guia, o ciclo de uma requisição será o seguinte:
 
+```mermaid
+sequenceDiagram
+    participant C as Cliente
+    participant G as APIM Gateway
+    participant B as App Service (FastAPI)
+
+    C->>G: GET /tarefas/tasks + Ocp-Apim-Subscription-Key
+    Note over G: valida a chave de assinatura<br/>aplica rate limit (10/min)<br/>injeta X-Correlation-Id
+    G->>B: encaminha para o back-end interno
+    B->>B: FastAPI processa a requisição
+    B-->>G: resposta (JSON)
+    Note over G: remove cabeçalhos internos<br/>adiciona headers de segurança
+    G-->>C: resposta final
 ```
-URL pública do APIM
-https://<nome-apim>.azure-api.net/tarefas
 
-        |
-        v
-  APIM Gateway
-  - Valida a chave de assinatura (Ocp-Apim-Subscription-Key)
-  - Aplica rate limit (10 requisições por minuto)
-  - Injeta cabeçalho de correlação
-  - Encaminha para o back-end
-
-        |
-        v
-  App Service (back-end interno)
-  https://fastapi-demo-<seunome>.azurewebsites.net
-  - FastAPI processa a requisição
-  - Retorna a resposta
-
-        |
-        v
-  APIM Gateway
-  - Remove cabeçalhos internos
-  - Retorna a resposta ao cliente
-```
+| Papel | Endereço |
+| --- | --- |
+| URL pública do gateway | `https://<nome-apim>.azure-api.net/tarefas` |
+| Back-end interno (nunca exposto) | `https://fastapi-demo-<seunome>.azurewebsites.net` |
 
 ---
 
@@ -369,7 +365,9 @@ Políticas são regras declarativas escritas em XML que o APIM aplica nas requis
     <inbound>
         <base />
 
-        <!-- Unica opcao de rate limiting suportada no Consumption -->
+        <!-- rate-limit (por assinatura) funciona em todos os tiers, incluindo Consumption. -->
+        <!-- Ja rate-limit-by-key / quota-by-key NAO sao suportados no Consumption. -->
+        <!-- renewal-period aceita no maximo 300 segundos. -->
         <rate-limit calls="10" renewal-period="60" />
 
         <set-header name="X-Correlation-Id" exists-action="skip">
@@ -733,7 +731,8 @@ A partir desse ponto, cada requisição ao APIM gera um registro detalhado no Ap
 
 | Política                    | Elemento XML                  | Finalidade                                         |
 | --------------------------- | ----------------------------- | -------------------------------------------------- |
-| Rate limiting               | `rate-limit-by-key`           | Limitar requisições por chave, IP ou usuário       |
+| Rate limiting (assinatura)  | `rate-limit`                  | Limitar requisições por assinatura (todos os tiers, inclui Consumption) |
+| Rate limiting (por chave)   | `rate-limit-by-key`           | Limitar por chave, IP ou usuário (**não** no Consumption — exige Developer/Basic/Standard/Premium ou v2) |
 | Autenticação JWT            | `validate-jwt`                | Validar tokens JWT (Azure AD, Auth0, etc.)         |
 | Transformação de requisição | `set-header`, `set-body`      | Modificar cabeçalhos e corpo antes de enviar       |
 | Cache                       | `cache-lookup`, `cache-store` | Armazenar respostas para reduzir carga no back-end |
@@ -744,13 +743,17 @@ A partir desse ponto, cada requisição ao APIM gera um registro detalhado no Ap
 
 ### Planos do APIM
 
+Valores aproximados — consulte a [página de preços oficial](https://azure.microsoft.com/en-us/pricing/details/api-management/).
+
 | Plano       | Custo fixo       | SLA    | Indicado para                             |
 | ----------- | ---------------- | ------ | ----------------------------------------- |
 | Consumption | Nenhum (por uso) | 99,95% | Desenvolvimento, testes, cargas variáveis |
 | Developer   | ~US$ 50/mês      | Nenhum | Desenvolvimento com mais recursos         |
-| Basic       | ~US$ 140/mês     | 99,95% | Produção com volume baixo                 |
+| Basic       | ~US$ 150/mês     | 99,95% | Produção com volume baixo                 |
 | Standard    | ~US$ 700/mês     | 99,95% | Produção com volume médio                 |
-| Premium     | ~US$ 2800/mês    | 99,99% | Produção enterprise, multi-região         |
+| Premium     | ~US$ 2.800/mês   | 99,99% | Produção enterprise, multi-região         |
+
+> **Tiers v2 (Basic v2, Standard v2, Premium v2):** provisionam em minutos (como o Consumption), têm preço menor que os equivalentes clássicos e suportam `rate-limit-by-key`. Se o Consumption não atender, são a próxima opção. O Consumption continua sendo o único sem custo fixo.
 
 ---
 
