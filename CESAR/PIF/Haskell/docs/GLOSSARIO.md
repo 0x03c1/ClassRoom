@@ -1,0 +1,22 @@
+# Glossário de Haskell
+
+- **Ação `IO`:** valor que representa uma interação com o ambiente.
+- **Aplicação parcial:** fornecer alguns argumentos a uma função e obter outra função.
+- **Avaliação preguiçosa (lazy evaluation):** avaliação adiada até que o valor seja necessário.
+- **Bind (`>>=`):** operação usada para encadear computações monádicas.
+- **Cabal:** ferramenta para construir projetos e gerenciar pacotes.
+- **Currying:** representar uma função de vários argumentos como uma sequência de funções de um argumento.
+- **GHC:** Glasgow Haskell Compiler.
+- **GHCi:** ambiente interativo do GHC.
+- **GHCup:** instalador e gerenciador de ferramentas Haskell.
+- **Imutabilidade:** valores não são atualizados por atribuição tradicional; novas expressões produzem novos valores.
+- **Inferência de tipos:** processo pelo qual o compilador deduz tipos a partir do programa.
+- **Lambda:** função anônima, escrita com `\` e `->`, como em `\x -> x * 2`.
+- **Monad:** abstração para encadear computações dependentes umas das outras.
+- **Pattern matching:** decomposição de valores segundo seus padrões.
+- **Pureza:** uma função depende apenas dos argumentos e não produz efeitos observáveis.
+- **Recursão:** definição que utiliza a própria função para resolver um subproblema.
+- **Type class:** interface que descreve operações que tipos podem implementar.
+- **Tipo algébrico:** tipo definido por alternativas (soma) e/ou campos combinados (produto).
+- **Tipo parametrizado:** tipo que recebe outro tipo como parâmetro, como `Maybe a`.
+- **HLS:** Haskell Language Server, integração de ferramentas de linguagem com editores.
