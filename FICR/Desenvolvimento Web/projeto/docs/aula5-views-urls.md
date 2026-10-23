@@ -60,10 +60,12 @@ def lista_livros(request):
 
 def detalhe_livro(request, pk):
     """Exibe os detalhes de um livro específico."""
-    livro = get_object_or_404(Livro, pk=pk, disponivel=True)
+    livro = get_object_or_404(Livro, pk=pk)
     contexto = {'livro': livro}
     return render(request, 'livros/detalhe.html', contexto)
 ```
+
+>  Não filtramos por `disponivel=True` no detalhe: nas próximas aulas, após cadastrar ou editar um livro indisponível, o usuário é redirecionado para esta página — com o filtro, ele receberia um 404.
 
 ### 2.1. Funções importantes
 
@@ -291,29 +293,40 @@ def lista_livros(request):
     return render(request, 'livros/lista.html', contexto)
 ```
 
-E no template `lista.html`, troque o loop e adicione navegação:
+E no template `lista.html`, como o contexto agora tem `page_obj` (e não mais `livros`), substitua todo o bloco `{% if livros %} ... {% endif %}` por:
 
 ```html
-{% for livro in page_obj %}
-    <li>
-        <a href="{% url 'livros:detalhe' livro.pk %}">{{ livro.titulo }}</a>
-    </li>
-{% endfor %}
+{% if page_obj %}
+    <p>Total: {{ page_obj.paginator.count }} livro(s)</p>
+    <ul>
+        {% for livro in page_obj %}
+            <li>
+                <a href="{% url 'livros:detalhe' livro.pk %}">{{ livro.titulo }}</a>
+                — {{ livro.categoria.nome }}
+                — R$ {{ livro.preco }}
+            </li>
+        {% endfor %}
+    </ul>
 
-{% if page_obj.has_other_pages %}
-    <nav>
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if busca %}&q={{ busca }}{% endif %}">← Anterior</a>
-        {% endif %}
+    {% if page_obj.has_other_pages %}
+        <nav>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if busca %}&q={{ busca|urlencode }}{% endif %}">← Anterior</a>
+            {% endif %}
 
-        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if busca %}&q={{ busca }}{% endif %}">Próxima →</a>
-        {% endif %}
-    </nav>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if busca %}&q={{ busca|urlencode }}{% endif %}">Próxima →</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% else %}
+    <p>Nenhum livro encontrado.</p>
 {% endif %}
 ```
+
+>  Se você trocar só o `for` e deixar o `{% if livros %}`, a página sempre mostrará "Nenhum livro encontrado", pois `livros` não existe mais no contexto. O filtro `urlencode` garante que buscas com espaços ou `&` não quebrem o link.
 
 ---
 

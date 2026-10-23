@@ -40,7 +40,7 @@ Todo o conteúdo está organizado em aulas progressivas dentro da pasta [`docs/`
 ## Stack utilizada
 
 - **Python** 3.11+
-- **Django** 5.x
+- **Django** 5.2 (LTS)
 - **SQLite** (desenvolvimento) / PostgreSQL (produção, opcional)
 - **Bootstrap** 5
 - **Git** + GitHub

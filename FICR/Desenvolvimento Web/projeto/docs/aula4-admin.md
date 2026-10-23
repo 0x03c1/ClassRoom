@@ -157,7 +157,7 @@ class LivroAdmin(admin.ModelAdmin):
 
 ## 7. Inline: editar livros dentro de uma categoria
 
-Imagine ver todos os livros de uma categoria diretamente na tela da categoria. Adicione no `admin.py`:
+Imagine ver todos os livros de uma categoria diretamente na tela da categoria. No `admin.py`, crie a classe `LivroInline` e **substitua** o `CategoriaAdmin` existente por esta versão:
 
 ```python
 class LivroInline(admin.TabularInline):
@@ -173,6 +173,8 @@ class CategoriaAdmin(admin.ModelAdmin):
     search_fields = ('nome',)
     inlines = [LivroInline]
 ```
+
+>  Não deixe dois `@admin.register(Categoria)` no arquivo: o Django acusa `AlreadyRegistered`.
 
 >  Existem dois tipos de inline: `TabularInline` (formato tabela) e `StackedInline` (formato empilhado).
 
@@ -218,6 +220,7 @@ git push
 ##  Exercícios
 
 1. Adicione `prepopulated_fields = {'slug': ('nome',)}` no admin de `Categoria`. Para isso, antes você precisará adicionar um campo `slug = models.SlugField(unique=True)` ao model `Categoria` e criar a migração.
+   >  Como já existem categorias cadastradas, um valor padrão único para todas violaria o `unique=True`. Faça em etapas: crie o campo com `blank=True` (sem `unique`), migre, preencha os slugs (pelo admin ou shell) e só então adicione `unique=True` e migre de novo.
 
 2. Crie uma **action customizada** no `LivroAdmin` que marca livros como indisponíveis em massa. Dica:
    ```python

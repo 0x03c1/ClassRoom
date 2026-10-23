@@ -192,8 +192,7 @@ from .models import Livro
 class LivroListView(ListView):
     model = Livro
     template_name = 'livros/lista.html'
-    context_object_name = 'page_obj'  # nome para casar com o template existente
-    paginate_by = 6
+    paginate_by = 6  # com paginação, o ListView já envia `page_obj` ao template
 
     def get_queryset(self):
         qs = super().get_queryset().filter(disponivel=True)
@@ -244,6 +243,8 @@ class LivroDeleteView(DeleteView):
     context_object_name = 'livro'
 ```
 
+>  **Não** use `context_object_name = 'page_obj'` no `ListView`: ele sobrescreveria o objeto de página (`Page`) pela lista de livros, e `has_other_pages`, `number` etc. deixariam de existir. A paginação sumiria do template.
+
 ### 7.1. Comparação rápida
 
 | Aspecto | FBV | CBV |
@@ -273,7 +274,7 @@ URL:
 path('livros/gerenciar/', views.gerenciar_livros, name='gerenciar'),
 ```
 
->  Atenção à ordem! `livros/gerenciar/` antes de `livros/<int:pk>/`.
+>  Por convenção, coloque `livros/gerenciar/` junto das rotas fixas, antes de `livros/<int:pk>/` (veja a nota sobre ordem de URLs na Aula 7).
 
 Template `livros/templates/livros/gerenciar.html`:
 

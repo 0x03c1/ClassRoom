@@ -116,6 +116,8 @@ gunicorn setup.wsgi
 
 A aplicação subirá em `http://127.0.0.1:8000/`.
 
+>  O Gunicorn **não funciona no Windows** (só Linux/macOS). No Windows, pule este teste local (o `runserver` continua valendo para desenvolvimento) ou use o WSL. Na plataforma de deploy ele roda normalmente.
+
 ---
 
 ### 2.4. Atualize o `requirements.txt`
@@ -124,20 +126,20 @@ A aplicação subirá em `http://127.0.0.1:8000/`.
 pip freeze > requirements.txt
 ```
 
-Verifique se ele contém:
+Verifique se ele contém (as versões exatas podem variar):
 
 ```
-Django==5.x
-Pillow==10.x
-gunicorn==21.x
-whitenoise==6.x
-python-decouple==3.x
-psycopg2-binary==2.x   # somente se for usar PostgreSQL
+Django==5.2.x
+pillow==...
+gunicorn==...
+whitenoise==...
+python-decouple==...
+psycopg2-binary==...   # somente se for usar PostgreSQL
 ```
 
 ---
 
-### 2.5. Criando o `Procfile` (para Render/Heroku-like)
+### 2.5. Criando o `Procfile` (opcional, para plataformas estilo Heroku)
 
 Crie na raiz um arquivo chamado `Procfile` (sem extensão):
 
@@ -145,6 +147,8 @@ Crie na raiz um arquivo chamado `Procfile` (sem extensão):
 web: gunicorn setup.wsgi
 release: python manage.py migrate
 ```
+
+>  O **Render ignora o `Procfile`**: lá, os comandos são os configurados no painel (Build/Start Command, seção 3). O `Procfile` só é usado em plataformas estilo Heroku (Heroku, Dokku etc.).
 
 ---
 
@@ -186,6 +190,16 @@ release: python manage.py migrate
 O Render começa o build automaticamente. Em ~5 minutos sua app está no ar! 
 
 >  Para banco PostgreSQL gerenciado: **New + → PostgreSQL** (free tier), copie a `Internal Database URL` para uma env var `DATABASE_URL` e ajuste o settings com `dj-database-url`.
+
+####  Limitações do plano gratuito do Render
+
+- **O disco é efêmero.** Tudo que é gravado no servidor some a cada novo deploy ou reinício. Com SQLite, isso significa **perder o banco** (livros, usuários, superusuário). Para dados persistentes, use o PostgreSQL do Render (exercício 4).
+- **Uploads (capas) não são servidos.** Com `DEBUG=False`, o `static(...)` do `urls.py` (Aula 3) não serve `/media/`, e o disco efêmero apagaria os arquivos de qualquer jeito. Em produção, as capas precisam de um armazenamento externo (ex.: Cloudinary, S3). No PythonAnywhere, o mapeamento de `/media/` da seção 4 resolve.
+- **Sem shell no plano free.** Para criar o superusuário, defina as env vars `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` e `DJANGO_SUPERUSER_PASSWORD` e acrescente ao final do Build Command:
+  ```
+  && (python manage.py createsuperuser --no-input || true)
+  ```
+  (o `|| true` evita que o build falhe quando o usuário já existe.)
 
 ---
 
@@ -321,7 +335,7 @@ git push
 | Página 500 sem detalhe | `DEBUG=False` (correto!) | Veja os logs do servidor; nunca volte para True. |
 | CSS não carrega | Esqueceu `collectstatic` | Rode no build/release. |
 | `OperationalError: no such table` | Esqueceu `migrate` | Adicione `python manage.py migrate` no build. |
-| `SECRET_KEY not set` | Variável de ambiente faltando | Configure no painel da plataforma. |
+| `UndefinedValueError: SECRET_KEY not found` | Variável de ambiente faltando (`.env` ausente ou env var não definida) | Configure no painel da plataforma. |
 
 ---
 

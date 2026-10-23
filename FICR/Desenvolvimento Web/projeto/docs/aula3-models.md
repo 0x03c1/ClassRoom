@@ -206,7 +206,6 @@ pip freeze > requirements.txt
 Imagens enviadas pelos usuários ficam em uma pasta de "mídia". Configure-a em `setup/settings.py`:
 
 ```python
-import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -371,7 +370,7 @@ git push
 
 | Erro | Causa | Solução |
 |------|-------|---------|
-| `cannot import name 'ImageField'` | Pillow não instalado | `pip install Pillow` |
+| `(fields.E210) Cannot use ImageField because Pillow is not installed.` | Pillow não instalado | `pip install Pillow` |
 | `you are trying to add a non-nullable field` | Adicionou campo obrigatório a tabela existente | Forneça um valor padrão ou aceite `null=True`. |
 | `no such table: livros_livro` | Migrações não aplicadas | Rode `python manage.py migrate`. |
 

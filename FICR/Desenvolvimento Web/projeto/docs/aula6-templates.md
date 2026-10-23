@@ -27,7 +27,7 @@ O Django Template Language (DTL) é uma linguagem **simples e segura** voltada p
 {{ nome|title }}                {# José Da Silva #}
 {{ nome|length }}               {# 4 #}
 {{ texto|truncatechars:50 }}    {# corta após 50 caracteres #}
-{{ preco|floatformat:2 }}       {# 49.90 #}
+{{ preco|floatformat:2 }}       {# 49,90 (com LANGUAGE_CODE = 'pt-br') #}
 {{ data|date:"d/m/Y" }}         {# 27/04/2026 #}
 {{ data|date:"d/m/Y H:i" }}     {# 27/04/2026 14:30 #}
 {{ valor|default:"Sem valor" }} {# fallback se vazio/None #}
@@ -156,9 +156,11 @@ Crie `livros/templates/livros/base.html`:
                         <li class="nav-item">
                             <span class="nav-link">Olá, {{ user.username }}</span>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/">Admin</a>
-                        </li>
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>
@@ -325,7 +327,7 @@ Cada filho pode **sobrescrever** os blocos do pai.
                     {% if page_obj.has_previous %}
                         <li class="page-item">
                             <a class="page-link"
-                               href="?page={{ page_obj.previous_page_number }}{% if busca %}&q={{ busca }}{% endif %}">
+                               href="?page={{ page_obj.previous_page_number }}{% if busca %}&q={{ busca|urlencode }}{% endif %}">
                                 ← Anterior
                             </a>
                         </li>
@@ -340,7 +342,7 @@ Cada filho pode **sobrescrever** os blocos do pai.
                     {% if page_obj.has_next %}
                         <li class="page-item">
                             <a class="page-link"
-                               href="?page={{ page_obj.next_page_number }}{% if busca %}&q={{ busca }}{% endif %}">
+                               href="?page={{ page_obj.next_page_number }}{% if busca %}&q={{ busca|urlencode }}{% endif %}">
                                 Próxima →
                             </a>
                         </li>
@@ -389,6 +391,9 @@ Cada filho pode **sobrescrever** os blocos do pai.
             <p class="text-muted">
                 <span class="badge bg-secondary">{{ livro.categoria.nome }}</span>
                 <span class="badge bg-info">{{ livro.editora.nome }}</span>
+                {% if not livro.disponivel %}
+                    <span class="badge bg-danger">Indisponível</span>
+                {% endif %}
             </p>
 
             <h3 class="text-primary fw-bold mb-3">R$ {{ livro.preco|floatformat:2 }}</h3>
@@ -411,7 +416,7 @@ Cada filho pode **sobrescrever** os blocos do pai.
             </table>
 
             <h4>Sinopse</h4>
-            <p>{{ livro.sinopse|linebreaks|default:"Sem sinopse cadastrada." }}</p>
+            {{ livro.sinopse|default:"Sem sinopse cadastrada."|linebreaks }}
 
             <a href="{% url 'livros:lista' %}" class="btn btn-outline-secondary">
                 ← Voltar à lista
@@ -420,6 +425,8 @@ Cada filho pode **sobrescrever** os blocos do pai.
     </div>
 {% endblock %}
 ```
+
+>  **Ordem dos filtros importa:** `linebreaks` já envolve o texto em `<p>`, e aplicado a uma string vazia devolve `<p></p>` (que não é "vazio"). Por isso o `default` vem **antes** do `linebreaks`, e não colocamos outro `<p>` em volta.
 
 ---
 
@@ -480,7 +487,7 @@ git push
 | Erro | Causa | Solução |
 |------|-------|---------|
 | Estilos não aplicam | Esqueceu de `{% load static %}` | Adicione no topo do template. |
-| `Invalid filter: 'floatformat'` | Esqueceu de carregar uma tag | Geralmente filtros nativos não precisam. Se for custom, use `{% load livros_extras %}`. |
+| `Invalid filter: 'formata_brl'` | Filtro customizado não carregado | Filtros nativos (como `floatformat`) não precisam de `load`. Para os custom, use `{% load livros_extras %}` no template. |
 | Imagem não aparece | `MEDIA_URL` não servido | Confira o `urls.py` (visto na Aula 3). |
 
 ---

@@ -90,7 +90,7 @@ Performing system checks...
 System check identified no issues (0 silenced).
 
 You have 18 unapplied migration(s)...
-Django version 5.1.4, using settings 'setup.settings'
+Django version 5.2.x, using settings 'setup.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 ```

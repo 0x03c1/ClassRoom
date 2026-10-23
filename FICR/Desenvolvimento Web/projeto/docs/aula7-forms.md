@@ -88,11 +88,13 @@ class LivroForm(forms.ModelForm):
 
     def clean_isbn(self):
         """Remove hífens e valida tamanho do ISBN."""
-        isbn = self.cleaned_data['isbn'].replace('-', '').replace(' ', '')
+        isbn = self.cleaned_data['isbn'].replace('-', '').replace(' ', '').upper()
         if len(isbn) not in (10, 13):
             raise ValidationError('ISBN deve ter 10 ou 13 dígitos.')
-        if not isbn.isdigit():
-            raise ValidationError('ISBN deve conter apenas números (e hífens).')
+        # No ISBN-10, o último dígito verificador pode ser "X" (vale 10)
+        valido = isbn.isdigit() or (len(isbn) == 10 and isbn[:-1].isdigit() and isbn[-1] == 'X')
+        if not valido:
+            raise ValidationError('ISBN deve conter apenas números (o ISBN-10 pode terminar em X).')
         return isbn
 
     def clean_ano_publicacao(self):
@@ -210,7 +212,7 @@ urlpatterns = [
 ]
 ```
 
->  **Atenção à ordem!** A URL `livros/novo/` deve vir **antes** de `livros/<int:pk>/`, senão o Django interpreta "novo" como um pk e dá erro.
+>  **Ordem das URLs:** o Django testa os padrões de cima para baixo e usa o primeiro que casar. Aqui não há conflito, porque `<int:pk>` só aceita números e nunca casa com "novo". Mas, se a rota fosse `livros/<str:nome>/` ou `livros/<slug:slug>/`, ela capturaria "novo". Por isso o costume é deixar as rotas fixas **antes** das rotas com parâmetros.
 
 ---
 

@@ -21,16 +21,11 @@
 
 ## 2. Livros recomendados
 
-###  Português
-
-- **MELÉ, Antonio.** *Django 5 by Example*. 5ª ed. Packt Publishing, 2024.
-  *(Tem edições brasileiras adaptadas — verifique com sua biblioteca.)*
-
-- **PEREIRA, Caique Rodrigues.** *Aprenda Programação Web com Python e Django*. Casa do Código, 2020.
-
-- **GONÇALVES, Henrique.** *Django para Iniciantes*. Independente, 2023.
+>  Para material em português, veja o tutorial do **Django Girls** e o tutorial Django do **MDN** (seção 3), além da documentação oficial, que tem tradução para pt-BR.
 
 ###  Inglês
+
+- **MELÉ, Antonio.** *Django 5 by Example*. 5th ed. Packt Publishing, 2024.
 
 - **VINCENT, William S.** *Django for Beginners* (Build websites with Python and Django). 5th ed. Welcome to Code, 2024.
 
@@ -93,7 +88,7 @@
 | **Render** | Sim | Recomendado neste curso. Suporte a PostgreSQL gratuito. |
 | **PythonAnywhere** | Sim | Mais simples, mas com domínio fixo. |
 | **Railway** | Limitado (créditos) | Ótima DX, mas paga. |
-| **Fly.io** | Sim | Performático, mas exige Docker. |
+| **Fly.io** | Não (só trial) | Sem plano gratuito para contas novas desde out/2024; cobrança por uso. |
 | **Heroku** |  Sem free tier | Histórico, mas não mais gratuito. |
 | **AWS / GCP / Azure** | Limitado (free tier) | Recomendado para projetos profissionais. |
 
@@ -103,7 +98,7 @@
 
 - **Stack Overflow** — https://stackoverflow.com/questions/tagged/django
 - **Reddit r/django** — https://reddit.com/r/django
-- **Django Discord** — https://discord.gg/xcRH6mN4fa
+- **Django Discord** — https://chat.djangoproject.com/
 - **Django Forum** — https://forum.djangoproject.com/
 - **Comunidade Python Brasil** — https://python.org.br/
 
@@ -130,7 +125,7 @@
 ## 8. Padrões e boas práticas
 
 - **Two Scoops of Django** — referência canônica em best practices.
-- **Django Best Practices (oficial)** — https://docs.djangoproject.com/en/stable/misc/design-philosophies/
+- **Filosofias de design do Django (oficial)** — https://docs.djangoproject.com/en/stable/misc/design-philosophies/
 - **PEP 8** — guia de estilo Python — https://peps.python.org/pep-0008/
 - **PEP 257** — convenções de docstrings — https://peps.python.org/pep-0257/
 - **Conventional Commits** — https://www.conventionalcommits.org/pt-br/v1.0.0/

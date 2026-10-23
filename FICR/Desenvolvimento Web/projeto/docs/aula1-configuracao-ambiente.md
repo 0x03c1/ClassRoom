@@ -99,8 +99,10 @@ Com o **venv ativado**, instale o Django:
 
 ```bash
 pip install --upgrade pip
-pip install django
+pip install "django>=5.2,<6.0"
 ```
+
+>  Fixamos a versão na série **5.2 (LTS)**, que é a usada neste material. Um `pip install django` sem versão instalaria o Django 6.x (que exige Python 3.12+) e alguns trechos/saídas podem ficar diferentes do que você verá aqui.
 
 Verifique a versão instalada:
 
@@ -108,7 +110,7 @@ Verifique a versão instalada:
 python -m django --version
 ```
 
-A saída deve ser algo como `5.1.4` (ou superior).
+A saída deve ser algo como `5.2.x`.
 
 ---
 
@@ -124,7 +126,7 @@ O conteúdo será similar a:
 
 ```
 asgiref==3.8.1
-Django==5.1.4
+Django==5.2.x
 sqlparse==0.5.3
 ```
 

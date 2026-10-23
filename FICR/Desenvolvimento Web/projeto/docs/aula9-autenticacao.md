@@ -284,7 +284,7 @@ Em `livros/templates/livros/base.html`, atualize o lado direito da navbar:
         </li>
         {% if user.is_staff %}
             <li class="nav-item">
-                <a class="nav-link" href="/admin/">Admin</a>
+                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
             </li>
         {% endif %}
         <li class="nav-item">
@@ -402,6 +402,8 @@ Já temos as views protegidas, mas é bom também **esconder os botões** que o 
 ```
 
 >  **Atenção:** esconder botões é só **conveniência visual**. A segurança real é a do **decorator** na view. Nunca confie só no template para autorização.
+>
+> No exemplo acima, o botão **Excluir** aparece só para staff, mas `deletar_livro` está protegida apenas com `@login_required` (seção 7). Qualquer usuário logado ainda consegue excluir acessando `/livros/<pk>/deletar/` direto. Para valer de verdade, troque o decorator dessa view por `@user_passes_test(is_staff)` (seção 8).
 
 ---
 
@@ -430,9 +432,10 @@ git push
 
 1. Crie uma view `meu_perfil(request)` que mostre os dados do usuário logado: username, e-mail, data de cadastro, último login. Acessível em `/contas/perfil/` e protegida por `@login_required`.
 
-2. Personalize a página `password_change.html` com Bootstrap (template em `registration/password_change_form.html`).
+2. Personalize a página de troca de senha com Bootstrap (template em `registration/password_change_form.html`).
+   >  O app `django.contrib.admin` já traz seu próprio `registration/password_change_form.html` e, como vem **antes** de `livros` em `INSTALLED_APPS`, o template dele tem prioridade. Para o seu ser usado, mova `'livros'` (ou o app onde está o template) para **antes** de `'django.contrib.admin'` na lista.
 
-3. Adicione no model `Livro` um campo `cadastrado_por = models.ForeignKey(User, on_delete=PROTECT, null=True)`. Na view `criar_livro`, antes do `form.save()`, faça:
+3. Adicione no model `Livro` um campo `cadastrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)` (com `from django.conf import settings` no topo do `models.py`). Na view `criar_livro`, antes do `form.save()`, faça:
    ```python
    livro = form.save(commit=False)
    livro.cadastrado_por = request.user
